@@ -256,13 +256,6 @@ namespace cardgame
 
            // userAvatar.sprite = Sprite.Create(www.texture, new Rect(0, 0, 100, 100), new Vector2(0, 0));
             //userAvatar.sprite = Sprite.Create(www.texture, new Rect(0, 0, 100, 100), new Vector2(0, 0));
-
-            
-
-            //Texture2D tempPic = new Texture2D(25, 25);
-
-            //www.LoadImageIntoTexture(tempPic);
-            //profilePicture.mainTexture = tempPic;
         }
 
     }
