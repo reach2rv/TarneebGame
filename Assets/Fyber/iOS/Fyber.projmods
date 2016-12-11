@@ -1,0 +1,42 @@
+{
+  "group": "Fyber",
+  "patches": [
+
+  ],
+  "libs": [
+    "Fyber/iOS/fyber-sdk-lib/libFyberSDK-8.6.0.a:<group>",
+    "Fyber/iOS/fyber-unity-bridge/unitybridge.a:<group>"
+  ],
+  "librarysearchpaths": [
+    "Fyber/iOS/fyber-sdk-lib/",
+    "Fyber/iOS/fyber-unity-bridge/"
+  ],
+  "frameworks": [
+    "AdSupport.framework:weak",
+    "CoreGraphics.framework",
+    "QuartzCore.framework",
+    "MediaPlayer.framework",
+    "SystemConfiguration.framework",
+    "StoreKit.framework:weak",
+    "CoreTelephony.framework",
+    "Security.framework"
+  ],
+  "headerpaths": [
+    "Fyber/iOS/fyber-sdk-lib"
+  ],
+  "files": [
+
+  ],
+  "folders": [
+    "Fyber/iOS/fyber-sdk-lib/Resources"
+  ],
+  "plist": [
+
+  ],
+  "excludes": [
+
+  ],
+  "linkers": [
+    "-ObjC"
+  ]
+}
