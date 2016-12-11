@@ -212,6 +212,5 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 # Unity
-Library/metadata/
-Library/ShaderCache/
+Library/
 Temp
