@@ -172,6 +172,12 @@ namespace GameSparks.Editor
 		{
 			public string version;
 			public string changes;
+			
+			public LatestJSON()
+            {
+                version = null;
+                changes = null;
+            }
 		}
     }
 }
