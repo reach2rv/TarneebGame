@@ -55,9 +55,6 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Advertisements">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Advertisements.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.Advertisements">
       <HintPath>Library\UnityAssemblies\UnityEditor.Advertisements.dll</HintPath>
     </Reference>
@@ -99,9 +96,6 @@
     </Reference>
     <Reference Include="UnityEngine.HoloLens">
       <HintPath>Library\UnityAssemblies\UnityEngine.HoloLens.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Purchasing.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.VR">
       <HintPath>Library\UnityAssemblies\UnityEditor.VR.dll</HintPath>
@@ -145,6 +139,9 @@
     <Reference Include="GameSparksRT">
       <HintPath>Assets\Plugins\GameSparksRT.dll</HintPath>
     </Reference>
+    <Reference Include="Assembly-UnityScript">
+      <HintPath>Library\ScriptAssemblies\Assembly-UnityScript.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Tarneeb.CSharp.csproj">
@@ -158,6 +155,11 @@
     <Compile Include="Assets\GameSparks\Editor\GameSparksRestWindow.cs" />
     <Compile Include="Assets\GameSparks\Editor\GameSparksSettingsEditor.cs" />
     <Compile Include="Assets\GameSparks\Editor\GameSparksUnityInspector.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Accordion\Editor\AccordionElementEditor.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Editor\CanvasGroupActivator.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Editor\CompressionTests.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Editor\UIExtensionsMenuOptions.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Editor\uGUITools.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\FacebookSDK\link.xml" />
@@ -169,6 +171,16 @@
     <None Include="Assets\Plugins\Metro\GameSparks.XML" />
     <None Include="Assets\Plugins\Metro\GameSparksRT.xml" />
     <None Include="Assets\Plugins\WP8\GameSparks.XML" />
+    <None Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Surrogates\SurrogatesReadMe.txt" />
+    <None Include="Assets\unity-ui-extensions\Shaders\SoftMaskShader.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\SoftMaskShaderText.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\UIAdditive.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\UIImageCrop.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\UILinearDodge.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\UIMultiply.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\UIParticleHidden.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\UIScreen.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\UISoftAdditive.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

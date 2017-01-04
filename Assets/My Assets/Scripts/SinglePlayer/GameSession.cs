@@ -10,6 +10,7 @@ namespace thecardsgame
     {
         int team1 = 0;
         int team2 = 0;
+        private Bots bots;
         // Use this for initialization
         void Start()
         {
@@ -124,7 +125,7 @@ namespace thecardsgame
         #region Internal sub-module references
         private GamePlay gamePlay;
         private Bidding bidding;
-        private Bots bots;
+        
         #endregion
 
         #region Score Properties

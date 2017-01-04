@@ -7,105 +7,48 @@ namespace cardgame
 {
     public class BackButtonManager : MonoBehaviour
     {
-
-        float _doubleTapTimeD;
-        bool quitBool;
-
-        void Start()
+        
+        void Awake()
         {
-
+            
         }
 
-        // Update is called once per frame
+        /// <summary>
+        /// Back Button event Manager
+        /// get the previous Scene from Player Preferences which we set while loading new Scene
+        /// Check for Active Scene and Process Accordingly
+        /// </summary>
         void Update()
         {
-            // _scenemanager = new GameSceneManager();
-           // bool doubleTapD = false;
-
-            quitBool = false;
-
-            if (Input.touchCount > 1) quitBool = false;
-            if (Input.GetKey(KeyCode.Escape) && quitBool == true)
+            if (Input.GetKey(KeyCode.Escape))
             {
-                Application.Quit();
-            }
-            if (Input.anyKey)
-            {
-                if (Input.GetKey(KeyCode.Escape))
+                string previousLevel = PlayerPrefs.GetString("previousLevel");
+                string activelevel = SceneManager.GetActiveScene().name;
+                
+                switch (activelevel)
                 {
-                    quitBool = false;
-                    string previousLevel = PlayerPrefs.GetString("previousLevel");
-                    SceneManager.LoadScene(previousLevel);
-                    if (previousLevel == "Main")
-                        quitBool = true;
-                }
-                else
-                {
-                    quitBool = true;
+                    case "01_1_Main":
+                        //TODO Add Confirmation Popup
+                        GameObject Quitcofirm = GameObject.Find("Canvas_Main");
+                        Quitcofirm.GetComponent<QuitConfirmUI>().DoQuit();
+                        break;
+                    case "06_3_CreateTable":
+                        //TODO Add Confirmation Popup
+                        SceneManager.LoadScene("01_1_Main");
+                        break;
+                    case "06_4_GameTable":
+                        //TODO Add Confirmation Popup
+                        SceneManager.LoadScene("01_1_Main");
+                        break;
+                    default:
+                        GameObject GSceneManager = GameObject.Find("GSceneManager");
+                        GSceneManager.GetComponent<GameSceneManager>().LoadPreviousScene();
+                        //SceneManager.LoadScene(previousLevel);
+                        break;
                 }
 
             }
-
-
-
-
-            //#region doubleTapD
-            //if (Input.GetKeyDown(KeyCode.Escape))
-            //    {
-            //        if (Time.time < 2.0f)
-            //        {
-            //            Application.Quit();
-
-            //        }
-            //        else if (Input.GetKey(KeyCode.Escape))
-            //        {
-            //            // Insert Code Here (I.E. Load Scene, Etc)
-            //            // OR Application.Quit();
-            //           string previousLevel = PlayerPrefs.GetString("previousLevel");
-            //           SceneManager.LoadScene(previousLevel);
-            //           // _scenemanager.LoadPreviousScene();
-            //            //return;
-            //        }
-            //       // _doubleTapTimeD = Time.time;
-            //    }
-
-            //#endregion
         }
+
     }
-
-
-        //    float touchDuration;
-        //    Touch touch;
-        //    void Update()
-        //    {
-        //        if (Input.touchCount > 0)
-        //        { //if there is any touch
-        //            touchDuration += Time.deltaTime;
-        //            touch = Input.GetTouch(0);
-
-        //            if (touch.phase == TouchPhase.Ended && touchDuration < 0.2f) //making sure it only check the touch once && it was a short touch/tap and not a dragging.
-        //                StartCoroutine("singleOrDouble");
-        //        }
-        //        else
-        //            touchDuration = 0.0f;
-        //    }
-
-        //    IEnumerator singleOrDouble()
-        //    {
-        //        yield return new WaitForSeconds(0.3f);
-        //        if (touch.tapCount == 1)
-        //        {
-        //            Debug.Log("Single");
-        //            Application.Quit();
-        //        }
-
-        //        else if (touch.tapCount == 2)
-        //        {
-        //            //this coroutine has been called twice. We should stop the next one here otherwise we get two double tap
-        //            StopCoroutine("singleOrDouble");
-        //            Debug.Log("Double");
-        //            _scenemanager.LoadPreviousScene();
-        //        }
-        //    }
-        //}
-    }
+}

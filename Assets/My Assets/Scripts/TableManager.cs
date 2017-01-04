@@ -32,10 +32,10 @@ namespace cardgame
         public void ChallengeUser(List<string> userIds)
         {
             //we use CreateChallengeRequest with the shortcode of our challenge, we set this in our GameSparks Portal
-            new CreateChallengeRequest().SetChallengeShortCode("ticTacToe")
+            new CreateChallengeRequest().SetChallengeShortCode("basic")
                 .SetUsersToChallenge(userIds) //We supply the userIds of who we wish to challenge
-                .SetEndTime(System.DateTime.Today.AddDays(1)) //We set a date and time the challenge will end on
-                .SetChallengeMessage("I've challenged you to Tic Tac Toe!") // We can send a message along with the invite
+                .SetEndTime(System.DateTime.Today.AddMinutes(10)) //We set a date and time the challenge will end on
+                .SetChallengeMessage("I've challenged you to Tarneeb!") // We can send a message along with the invite
                 .Send((response) =>
                 {
                     if (response.HasErrors)
@@ -61,7 +61,7 @@ namespace cardgame
             gameInvites.Clear();
 
             //We send a ListChallenge Request with the shortcode of our challenge, we set this in our GameSparks Portal
-            new ListChallengeRequest().SetShortCode("ticTacToe")
+            new ListChallengeRequest().SetShortCode("basic")
                 .SetState("RECEIVED") //We only want to get games that we've received
                 .SetEntryCount(50) //We want to pull in the first 50 we find
                 .Send((response) =>
@@ -86,7 +86,7 @@ namespace cardgame
             runningGames.Clear();
 
             //We send a ListChallenge Request with the shortcode of our challenge, we set this in our GameSparks Portal
-            new ListChallengeRequest().SetShortCode("ticTacToe")
+            new ListChallengeRequest().SetShortCode("basic")
                 .SetState("RUNNING") //We want to get all games that are running
                 .SetEntryCount(50) //We want to pull in the first 50
                 .Send((response) =>

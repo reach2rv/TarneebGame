@@ -9,17 +9,21 @@ using cardgame;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using GameSparks.Api.Requests;
+using GameSparks.Api.Messages;
 
 namespace cardgame
 {
     public class GameSparksManager : MonoBehaviour
     {
-        public string displayName, UserId;
+        public string displayName, UserId, players;
         public long cSilver, cGold, cSwag;
         public int loginDays;
+        public List<string> _achievementsList;
+        public List<GSData> Cards;
+
 
         //singleton for the gamesparks manager so it can be called from anywhere
-        private GameSparksManager instance = null;
+        private static GameSparksManager instance = null;
         //getter property for private backing field instance
         // public GameSparksManager Instance() { return instance; }
 
@@ -42,7 +46,11 @@ namespace cardgame
             FB.Init();
             GS.GameSparksAvailable += GSAvailable;
             //playerconnectedtoGS();
-            GameSparks.Api.Messages.AchievementEarnedMessage.Listener += AchievementEarnedListener;
+            AchievementEarnedMessage.Listener += AchievementEarnedListener;
+            ChallengeStartedMessage.Listener += MatchFoundMessageListener;
+            MatchUpdatedMessage.Listener += MatchUpdatedMessageListner;
+
+
         }
 
         void GSAvailable(bool _isAvalable)
@@ -64,6 +72,58 @@ namespace cardgame
             Debug.LogWarning("Message Received" + _message.AchievementName);
         }
 
+        //Achievement message  listener
+        int cplay = 0;
+        private void MatchFoundMessageListener(GameSparks.Api.Messages.ChallengeStartedMessage _message)
+        {
+            var chalid = _message.Challenge.ChallengeId;
+            PlayerPrefs.SetString("chalid", chalid);
+            string playerid = PlayerPrefs.GetString("userId");
+            Cards = _message.Challenge.ScriptData.GetGSDataList(playerid);
+            StartCoroutine(LoadNewScene());
+        }
+
+        private void MatchUpdatedMessageListner(GameSparks.Api.Messages.MatchUpdatedMessage _message)
+        {
+            var addedplayers = _message.AddedPlayers;
+            GameObject go = GameObject.Find("Canvas_Main/wait_match/Box");
+            if (go != null)
+            {
+                var player1 = go.transform.Find("Player_1").gameObject;
+                var player2 = go.transform.Find("Player_2").gameObject;
+                var player3 = go.transform.Find("Player_3").gameObject;
+                var player4 = go.transform.Find("Player_4").gameObject;
+
+                switch (addedplayers.Count)
+                {
+                    case 1:
+                        player1.SetActive(true);
+                        break;
+                    case 2:
+                        player2.SetActive(true);
+                        break;
+                    case 3:
+                        player3.SetActive(true);
+                        break;
+                    case 4:
+                        player4.SetActive(true);
+                        break;
+                }
+
+            }
+
+        }
+
+        IEnumerator LoadNewScene()
+        {
+            yield return new WaitForSeconds(5);
+            AsyncOperation async = SceneManager.LoadSceneAsync("06_4_GameTableSinglePlayer");
+            while (!async.isDone)
+            {
+                yield return null;
+            }
+        }
+
         void playerconnectedtoGS()
         {
             string fblogin = PlayerPrefs.GetString("FBLogin");
@@ -75,8 +135,11 @@ namespace cardgame
 
             else if (GS.Authenticated)
             {
-                StartCoroutine(PlayerDetails());
-                PlayerPrefs.SetString("NewPlayer", "");
+                if (userid() == false)
+                {
+                    StartCoroutine(PlayerDetails());
+                    PlayerPrefs.SetString("NewPlayer", "");
+                }                
             }
             else
             {
@@ -97,11 +160,13 @@ namespace cardgame
             getaccountdetails();
             yield return new WaitUntil(() => userid() == true);
             setaccontdetails();
+
         }
         void GamesparksDeviceConnect()
         {
             new GameSparks.Api.Requests.DeviceAuthenticationRequest()
                     .SetDurable(true)
+                    .SetDisplayName("user")
                         .Send((response) =>
                         {
                             if (!response.HasErrors)
@@ -125,7 +190,7 @@ namespace cardgame
                         }
                         else
                         {
-                            IList<string> achievements = response.Achievements;
+                            _achievementsList = response.Achievements;
                             GSData virtualGoods = response.VirtualGoods;
                             displayName = response.DisplayName;
                             //PlayerPrefs.SetString("location", response.Location.ToString());
@@ -133,13 +198,13 @@ namespace cardgame
                             cSilver = (long)response.Currency1;
                             cGold = (long)response.Currency2;
                             cSwag = (long)response.Currency3;
-                            //loginDays = (int)response.ScriptData.GetInt("daysInrow");
+                            //loginDays = (int)response.BaseData.GetInt("daysInrow");
                             Debug.Log("Received Account Details");
                         }
                     });
         }
-
-        void setaccontdetails()
+        int achvmnts = 0;
+        public void setaccontdetails()
         {
             PlayerPrefs.SetString("displayName", displayName);
             //PlayerPrefs.SetString("location", response.Location.ToString());
@@ -148,11 +213,18 @@ namespace cardgame
             PlayerPrefs.SetFloat("cGold", cGold);
             PlayerPrefs.SetFloat("cSwag", cSwag);
             PlayerPrefs.SetInt("loginDays", loginDays);
-
+            if (_achievementsList != null)
+            {
+                foreach (string s in _achievementsList)
+                {
+                    achvmnts++;
+                }
+            }
+            PlayerPrefs.SetInt("achvmnts", achvmnts);
             Debug.Log("Player Preferences set" + UserId + cSilver + cGold);
         }
 
-        void updateplayedetails(string disname)
+        public void updateplayedetails(string disname)
         {
             new ChangeUserDetailsRequest()
             .SetDisplayName(disname)

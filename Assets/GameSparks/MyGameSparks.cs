@@ -61,6 +61,133 @@ namespace GameSparks.Api.Requests{
 		}			
 	}
 	
+	public class LogEventRequest_bid : GSTypedRequest<LogEventRequest_bid, LogEventResponse>
+	{
+	
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogEventResponse (response);
+		}
+		
+		public LogEventRequest_bid() : base("LogEventRequest"){
+			request.AddString("eventKey", "bid");
+		}
+		public LogEventRequest_bid Set_tricks( long value )
+		{
+			request.AddNumber("tricks", value);
+			return this;
+		}			
+	}
+	
+	public class LogChallengeEventRequest_bid : GSTypedRequest<LogChallengeEventRequest_bid, LogChallengeEventResponse>
+	{
+		public LogChallengeEventRequest_bid() : base("LogChallengeEventRequest"){
+			request.AddString("eventKey", "bid");
+		}
+		
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogChallengeEventResponse (response);
+		}
+		
+		/// <summary>
+		/// The challenge ID instance to target
+		/// </summary>
+		public LogChallengeEventRequest_bid SetChallengeInstanceId( String challengeInstanceId )
+		{
+			request.AddString("challengeInstanceId", challengeInstanceId);
+			return this;
+		}
+		public LogChallengeEventRequest_bid Set_tricks( long value )
+		{
+			request.AddNumber("tricks", value);
+			return this;
+		}			
+	}
+	
+	public class LogEventRequest_level_event : GSTypedRequest<LogEventRequest_level_event, LogEventResponse>
+	{
+	
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogEventResponse (response);
+		}
+		
+		public LogEventRequest_level_event() : base("LogEventRequest"){
+			request.AddString("eventKey", "level_event");
+		}
+		public LogEventRequest_level_event Set_l_score( long value )
+		{
+			request.AddNumber("l_score", value);
+			return this;
+		}			
+	}
+	
+	public class LogChallengeEventRequest_level_event : GSTypedRequest<LogChallengeEventRequest_level_event, LogChallengeEventResponse>
+	{
+		public LogChallengeEventRequest_level_event() : base("LogChallengeEventRequest"){
+			request.AddString("eventKey", "level_event");
+		}
+		
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogChallengeEventResponse (response);
+		}
+		
+		/// <summary>
+		/// The challenge ID instance to target
+		/// </summary>
+		public LogChallengeEventRequest_level_event SetChallengeInstanceId( String challengeInstanceId )
+		{
+			request.AddString("challengeInstanceId", challengeInstanceId);
+			return this;
+		}
+		public LogChallengeEventRequest_level_event Set_l_score( long value )
+		{
+			request.AddNumber("l_score", value);
+			return this;
+		}			
+	}
+	
+	public class LogEventRequest_Match_Event : GSTypedRequest<LogEventRequest_Match_Event, LogEventResponse>
+	{
+	
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogEventResponse (response);
+		}
+		
+		public LogEventRequest_Match_Event() : base("LogEventRequest"){
+			request.AddString("eventKey", "Match_Event");
+		}
+		
+		public LogEventRequest_Match_Event Set_match_code( string value )
+		{
+			request.AddString("match_code", value);
+			return this;
+		}
+	}
+	
+	public class LogChallengeEventRequest_Match_Event : GSTypedRequest<LogChallengeEventRequest_Match_Event, LogChallengeEventResponse>
+	{
+		public LogChallengeEventRequest_Match_Event() : base("LogChallengeEventRequest"){
+			request.AddString("eventKey", "Match_Event");
+		}
+		
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogChallengeEventResponse (response);
+		}
+		
+		/// <summary>
+		/// The challenge ID instance to target
+		/// </summary>
+		public LogChallengeEventRequest_Match_Event SetChallengeInstanceId( String challengeInstanceId )
+		{
+			request.AddString("challengeInstanceId", challengeInstanceId);
+			return this;
+		}
+		public LogChallengeEventRequest_Match_Event Set_match_code( string value )
+		{
+			request.AddString("match_code", value);
+			return this;
+		}
+	}
+	
 	public class LogEventRequest_takeTurn : GSTypedRequest<LogEventRequest_takeTurn, LogEventResponse>
 	{
 	
@@ -71,15 +198,10 @@ namespace GameSparks.Api.Requests{
 		public LogEventRequest_takeTurn() : base("LogEventRequest"){
 			request.AddString("eventKey", "takeTurn");
 		}
-		public LogEventRequest_takeTurn Set_pos( long value )
-		{
-			request.AddNumber("pos", value);
-			return this;
-		}			
 		
-		public LogEventRequest_takeTurn Set_playericon( string value )
+		public LogEventRequest_takeTurn Set_card( string value )
 		{
-			request.AddString("playericon", value);
+			request.AddString("card", value);
 			return this;
 		}
 	}
@@ -102,14 +224,52 @@ namespace GameSparks.Api.Requests{
 			request.AddString("challengeInstanceId", challengeInstanceId);
 			return this;
 		}
-		public LogChallengeEventRequest_takeTurn Set_pos( long value )
+		public LogChallengeEventRequest_takeTurn Set_card( string value )
 		{
-			request.AddNumber("pos", value);
+			request.AddString("card", value);
 			return this;
-		}			
-		public LogChallengeEventRequest_takeTurn Set_playericon( string value )
+		}
+	}
+	
+	public class LogEventRequest_tarneeb : GSTypedRequest<LogEventRequest_tarneeb, LogEventResponse>
+	{
+	
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogEventResponse (response);
+		}
+		
+		public LogEventRequest_tarneeb() : base("LogEventRequest"){
+			request.AddString("eventKey", "tarneeb");
+		}
+		
+		public LogEventRequest_tarneeb Set_trump( string value )
 		{
-			request.AddString("playericon", value);
+			request.AddString("trump", value);
+			return this;
+		}
+	}
+	
+	public class LogChallengeEventRequest_tarneeb : GSTypedRequest<LogChallengeEventRequest_tarneeb, LogChallengeEventResponse>
+	{
+		public LogChallengeEventRequest_tarneeb() : base("LogChallengeEventRequest"){
+			request.AddString("eventKey", "tarneeb");
+		}
+		
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogChallengeEventResponse (response);
+		}
+		
+		/// <summary>
+		/// The challenge ID instance to target
+		/// </summary>
+		public LogChallengeEventRequest_tarneeb SetChallengeInstanceId( String challengeInstanceId )
+		{
+			request.AddString("challengeInstanceId", challengeInstanceId);
+			return this;
+		}
+		public LogChallengeEventRequest_tarneeb Set_trump( string value )
+		{
+			request.AddString("trump", value);
 			return this;
 		}
 	}
@@ -120,20 +280,20 @@ namespace GameSparks.Api.Requests{
 	
 namespace GameSparks.Api.Requests{
 	
-	public class LeaderboardDataRequest_highscore : GSTypedRequest<LeaderboardDataRequest_highscore,LeaderboardDataResponse_highscore>
+	public class LeaderboardDataRequest_High_Score_Leaderboard : GSTypedRequest<LeaderboardDataRequest_High_Score_Leaderboard,LeaderboardDataResponse_High_Score_Leaderboard>
 	{
-		public LeaderboardDataRequest_highscore() : base("LeaderboardDataRequest"){
-			request.AddString("leaderboardShortCode", "highscore");
+		public LeaderboardDataRequest_High_Score_Leaderboard() : base("LeaderboardDataRequest"){
+			request.AddString("leaderboardShortCode", "High_Score_Leaderboard");
 		}
 		
 		protected override GSTypedResponse BuildResponse (GSObject response){
-			return new LeaderboardDataResponse_highscore (response);
+			return new LeaderboardDataResponse_High_Score_Leaderboard (response);
 		}		
 		
 		/// <summary>
 		/// The challenge instance to get the leaderboard data for
 		/// </summary>
-		public LeaderboardDataRequest_highscore SetChallengeInstanceId( String challengeInstanceId )
+		public LeaderboardDataRequest_High_Score_Leaderboard SetChallengeInstanceId( String challengeInstanceId )
 		{
 			request.AddString("challengeInstanceId", challengeInstanceId);
 			return this;
@@ -141,7 +301,7 @@ namespace GameSparks.Api.Requests{
 		/// <summary>
 		/// The number of items to return in a page (default=50)
 		/// </summary>
-		public LeaderboardDataRequest_highscore SetEntryCount( long entryCount )
+		public LeaderboardDataRequest_High_Score_Leaderboard SetEntryCount( long entryCount )
 		{
 			request.AddNumber("entryCount", entryCount);
 			return this;
@@ -149,7 +309,7 @@ namespace GameSparks.Api.Requests{
 		/// <summary>
 		/// A friend id or an array of friend ids to use instead of the player's social friends
 		/// </summary>
-		public LeaderboardDataRequest_highscore SetFriendIds( List<string> friendIds )
+		public LeaderboardDataRequest_High_Score_Leaderboard SetFriendIds( List<string> friendIds )
 		{
 			request.AddStringList("friendIds", friendIds);
 			return this;
@@ -157,7 +317,7 @@ namespace GameSparks.Api.Requests{
 		/// <summary>
 		/// Number of entries to include from head of the list
 		/// </summary>
-		public LeaderboardDataRequest_highscore SetIncludeFirst( long includeFirst )
+		public LeaderboardDataRequest_High_Score_Leaderboard SetIncludeFirst( long includeFirst )
 		{
 			request.AddNumber("includeFirst", includeFirst);
 			return this;
@@ -165,7 +325,7 @@ namespace GameSparks.Api.Requests{
 		/// <summary>
 		/// Number of entries to include from tail of the list
 		/// </summary>
-		public LeaderboardDataRequest_highscore SetIncludeLast( long includeLast )
+		public LeaderboardDataRequest_High_Score_Leaderboard SetIncludeLast( long includeLast )
 		{
 			request.AddNumber("includeLast", includeLast);
 			return this;
@@ -174,7 +334,7 @@ namespace GameSparks.Api.Requests{
 		/// <summary>
 		/// The offset into the set of leaderboards returned
 		/// </summary>
-		public LeaderboardDataRequest_highscore SetOffset( long offset )
+		public LeaderboardDataRequest_High_Score_Leaderboard SetOffset( long offset )
 		{
 			request.AddNumber("offset", offset);
 			return this;
@@ -182,7 +342,7 @@ namespace GameSparks.Api.Requests{
 		/// <summary>
 		/// If True returns a leaderboard of the player's social friends
 		/// </summary>
-		public LeaderboardDataRequest_highscore SetSocial( bool social )
+		public LeaderboardDataRequest_High_Score_Leaderboard SetSocial( bool social )
 		{
 			request.AddBoolean("social", social);
 			return this;
@@ -190,7 +350,7 @@ namespace GameSparks.Api.Requests{
 		/// <summary>
 		/// The IDs of the teams you are interested in
 		/// </summary>
-		public LeaderboardDataRequest_highscore SetTeamIds( List<string> teamIds )
+		public LeaderboardDataRequest_High_Score_Leaderboard SetTeamIds( List<string> teamIds )
 		{
 			request.AddStringList("teamIds", teamIds);
 			return this;
@@ -198,7 +358,7 @@ namespace GameSparks.Api.Requests{
 		/// <summary>
 		/// The type of team you are interested in
 		/// </summary>
-		public LeaderboardDataRequest_highscore SetTeamTypes( List<string> teamTypes )
+		public LeaderboardDataRequest_High_Score_Leaderboard SetTeamTypes( List<string> teamTypes )
 		{
 			request.AddStringList("teamTypes", teamTypes);
 			return this;
@@ -206,20 +366,20 @@ namespace GameSparks.Api.Requests{
 		
 	}
 
-	public class AroundMeLeaderboardRequest_highscore : GSTypedRequest<AroundMeLeaderboardRequest_highscore,AroundMeLeaderboardResponse_highscore>
+	public class AroundMeLeaderboardRequest_High_Score_Leaderboard : GSTypedRequest<AroundMeLeaderboardRequest_High_Score_Leaderboard,AroundMeLeaderboardResponse_High_Score_Leaderboard>
 	{
-		public AroundMeLeaderboardRequest_highscore() : base("AroundMeLeaderboardRequest"){
-			request.AddString("leaderboardShortCode", "highscore");
+		public AroundMeLeaderboardRequest_High_Score_Leaderboard() : base("AroundMeLeaderboardRequest"){
+			request.AddString("leaderboardShortCode", "High_Score_Leaderboard");
 		}
 		
 		protected override GSTypedResponse BuildResponse (GSObject response){
-			return new AroundMeLeaderboardResponse_highscore (response);
+			return new AroundMeLeaderboardResponse_High_Score_Leaderboard (response);
 		}		
 		
 		/// <summary>
 		/// The number of items to return in a page (default=50)
 		/// </summary>
-		public AroundMeLeaderboardRequest_highscore SetEntryCount( long entryCount )
+		public AroundMeLeaderboardRequest_High_Score_Leaderboard SetEntryCount( long entryCount )
 		{
 			request.AddNumber("entryCount", entryCount);
 			return this;
@@ -227,7 +387,7 @@ namespace GameSparks.Api.Requests{
 		/// <summary>
 		/// A friend id or an array of friend ids to use instead of the player's social friends
 		/// </summary>
-		public AroundMeLeaderboardRequest_highscore SetFriendIds( List<string> friendIds )
+		public AroundMeLeaderboardRequest_High_Score_Leaderboard SetFriendIds( List<string> friendIds )
 		{
 			request.AddStringList("friendIds", friendIds);
 			return this;
@@ -235,7 +395,7 @@ namespace GameSparks.Api.Requests{
 		/// <summary>
 		/// Number of entries to include from head of the list
 		/// </summary>
-		public AroundMeLeaderboardRequest_highscore SetIncludeFirst( long includeFirst )
+		public AroundMeLeaderboardRequest_High_Score_Leaderboard SetIncludeFirst( long includeFirst )
 		{
 			request.AddNumber("includeFirst", includeFirst);
 			return this;
@@ -243,7 +403,7 @@ namespace GameSparks.Api.Requests{
 		/// <summary>
 		/// Number of entries to include from tail of the list
 		/// </summary>
-		public AroundMeLeaderboardRequest_highscore SetIncludeLast( long includeLast )
+		public AroundMeLeaderboardRequest_High_Score_Leaderboard SetIncludeLast( long includeLast )
 		{
 			request.AddNumber("includeLast", includeLast);
 			return this;
@@ -252,7 +412,7 @@ namespace GameSparks.Api.Requests{
 		/// <summary>
 		/// If True returns a leaderboard of the player's social friends
 		/// </summary>
-		public AroundMeLeaderboardRequest_highscore SetSocial( bool social )
+		public AroundMeLeaderboardRequest_High_Score_Leaderboard SetSocial( bool social )
 		{
 			request.AddBoolean("social", social);
 			return this;
@@ -260,7 +420,7 @@ namespace GameSparks.Api.Requests{
 		/// <summary>
 		/// The IDs of the teams you are interested in
 		/// </summary>
-		public AroundMeLeaderboardRequest_highscore SetTeamIds( List<string> teamIds )
+		public AroundMeLeaderboardRequest_High_Score_Leaderboard SetTeamIds( List<string> teamIds )
 		{
 			request.AddStringList("teamIds", teamIds);
 			return this;
@@ -268,7 +428,7 @@ namespace GameSparks.Api.Requests{
 		/// <summary>
 		/// The type of team you are interested in
 		/// </summary>
-		public AroundMeLeaderboardRequest_highscore SetTeamTypes( List<string> teamTypes )
+		public AroundMeLeaderboardRequest_High_Score_Leaderboard SetTeamTypes( List<string> teamTypes )
 		{
 			request.AddStringList("teamTypes", teamTypes);
 			return this;
@@ -278,41 +438,44 @@ namespace GameSparks.Api.Requests{
 
 namespace GameSparks.Api.Responses{
 	
-	public class _LeaderboardEntry_highscore : LeaderboardDataResponse._LeaderboardData{
-		public _LeaderboardEntry_highscore(GSData data) : base(data){}
-	}
-	
-	public class LeaderboardDataResponse_highscore : LeaderboardDataResponse
-	{
-		public LeaderboardDataResponse_highscore(GSData data) : base(data){}
-		
-		public GSEnumerable<_LeaderboardEntry_highscore> Data_highscore{
-			get{return new GSEnumerable<_LeaderboardEntry_highscore>(response.GetObjectList("data"), (data) => { return new _LeaderboardEntry_highscore(data);});}
-		}
-		
-		public GSEnumerable<_LeaderboardEntry_highscore> First_highscore{
-			get{return new GSEnumerable<_LeaderboardEntry_highscore>(response.GetObjectList("first"), (data) => { return new _LeaderboardEntry_highscore(data);});}
-		}
-		
-		public GSEnumerable<_LeaderboardEntry_highscore> Last_highscore{
-			get{return new GSEnumerable<_LeaderboardEntry_highscore>(response.GetObjectList("last"), (data) => { return new _LeaderboardEntry_highscore(data);});}
+	public class _LeaderboardEntry_High_Score_Leaderboard : LeaderboardDataResponse._LeaderboardData{
+		public _LeaderboardEntry_High_Score_Leaderboard(GSData data) : base(data){}
+		public long? l_score{
+			get{return response.GetNumber("l_score");}
 		}
 	}
 	
-	public class AroundMeLeaderboardResponse_highscore : AroundMeLeaderboardResponse
+	public class LeaderboardDataResponse_High_Score_Leaderboard : LeaderboardDataResponse
 	{
-		public AroundMeLeaderboardResponse_highscore(GSData data) : base(data){}
+		public LeaderboardDataResponse_High_Score_Leaderboard(GSData data) : base(data){}
 		
-		public GSEnumerable<_LeaderboardEntry_highscore> Data_highscore{
-			get{return new GSEnumerable<_LeaderboardEntry_highscore>(response.GetObjectList("data"), (data) => { return new _LeaderboardEntry_highscore(data);});}
+		public GSEnumerable<_LeaderboardEntry_High_Score_Leaderboard> Data_High_Score_Leaderboard{
+			get{return new GSEnumerable<_LeaderboardEntry_High_Score_Leaderboard>(response.GetObjectList("data"), (data) => { return new _LeaderboardEntry_High_Score_Leaderboard(data);});}
 		}
 		
-		public GSEnumerable<_LeaderboardEntry_highscore> First_highscore{
-			get{return new GSEnumerable<_LeaderboardEntry_highscore>(response.GetObjectList("first"), (data) => { return new _LeaderboardEntry_highscore(data);});}
+		public GSEnumerable<_LeaderboardEntry_High_Score_Leaderboard> First_High_Score_Leaderboard{
+			get{return new GSEnumerable<_LeaderboardEntry_High_Score_Leaderboard>(response.GetObjectList("first"), (data) => { return new _LeaderboardEntry_High_Score_Leaderboard(data);});}
 		}
 		
-		public GSEnumerable<_LeaderboardEntry_highscore> Last_highscore{
-			get{return new GSEnumerable<_LeaderboardEntry_highscore>(response.GetObjectList("last"), (data) => { return new _LeaderboardEntry_highscore(data);});}
+		public GSEnumerable<_LeaderboardEntry_High_Score_Leaderboard> Last_High_Score_Leaderboard{
+			get{return new GSEnumerable<_LeaderboardEntry_High_Score_Leaderboard>(response.GetObjectList("last"), (data) => { return new _LeaderboardEntry_High_Score_Leaderboard(data);});}
+		}
+	}
+	
+	public class AroundMeLeaderboardResponse_High_Score_Leaderboard : AroundMeLeaderboardResponse
+	{
+		public AroundMeLeaderboardResponse_High_Score_Leaderboard(GSData data) : base(data){}
+		
+		public GSEnumerable<_LeaderboardEntry_High_Score_Leaderboard> Data_High_Score_Leaderboard{
+			get{return new GSEnumerable<_LeaderboardEntry_High_Score_Leaderboard>(response.GetObjectList("data"), (data) => { return new _LeaderboardEntry_High_Score_Leaderboard(data);});}
+		}
+		
+		public GSEnumerable<_LeaderboardEntry_High_Score_Leaderboard> First_High_Score_Leaderboard{
+			get{return new GSEnumerable<_LeaderboardEntry_High_Score_Leaderboard>(response.GetObjectList("first"), (data) => { return new _LeaderboardEntry_High_Score_Leaderboard(data);});}
+		}
+		
+		public GSEnumerable<_LeaderboardEntry_High_Score_Leaderboard> Last_High_Score_Leaderboard{
+			get{return new GSEnumerable<_LeaderboardEntry_High_Score_Leaderboard>(response.GetObjectList("last"), (data) => { return new _LeaderboardEntry_High_Score_Leaderboard(data);});}
 		}
 	}
 }	

@@ -9,7 +9,7 @@ namespace thecardsgame
     public class Bots : MonoBehaviour
     {
         public PlayerPosition CurrentTurn { get; }
-        private GameSession gameSession;
+        private GameSession gameSession { get; set; }
         private GamePlay gamePlay;
         public Dictionary<PlayerPosition, Cards> CurrentTrick { get; private set; }
         public Dictionary<PlayerPosition, List<Cards>> PlayerCards { get; private set; }

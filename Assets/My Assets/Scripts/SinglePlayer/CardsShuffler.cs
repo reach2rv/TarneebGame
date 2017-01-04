@@ -1,25 +1,14 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using System.Linq;
 
 namespace thecardsgame
 {
-    public class CardsShuffler : MonoBehaviour
+    /// <summary>
+    /// Encapsulates the shuffling algorithm
+    /// </summary>
+    public class CardsShuffler
     {
-
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
         private const int numberOfPlayers = 4;
 
         /// <summary>
@@ -36,8 +25,8 @@ namespace thecardsgame
                 shuffledCards.Add(new List<Cards>());
             }
 
-            List<Cards> allCards = Unshuffled;
-           System.Random random = new System.Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+            List<Cards> allCards = AllCards;
+            Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
 
             for (int i = allCards.Count - 1; i >= 1; i--)
             {
@@ -72,12 +61,12 @@ namespace thecardsgame
         /// <summary>
         /// Generates the un-shuffled cards
         /// </summary>
-        private List<Cards> Unshuffled
+        private List<Cards> AllCards
         {
             get
             {
                 List<Cards> allCards = new List<Cards>();
-                for (int i = (int)Suit.Spades; i <= (int)Suit.Clubs; i++)
+                for (int i = (int)Suit.Clubs; i <= (int)Suit.Spades; i++)
                 {
                     for (int j = 1; j <= 13; j++)
                     {
@@ -90,5 +79,4 @@ namespace thecardsgame
             }
         }
     }
-
 }

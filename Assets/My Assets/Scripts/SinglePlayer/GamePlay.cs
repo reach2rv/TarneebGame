@@ -104,12 +104,12 @@ namespace thecardsgame
                 //Shuffle cards and fill player cards
 
                 //TODO: Distribute Cards to Players over Photon Network
-                CardsShuffler shuffler = new CardsShuffler();
-                var shuffledCards = shuffler.Shuffle();
-                PlayerCards[PlayerPosition.South] = shuffledCards[0];
-                PlayerCards[PlayerPosition.East] = shuffledCards[1];
-                PlayerCards[PlayerPosition.North] = shuffledCards[2];
-                PlayerCards[PlayerPosition.West] = shuffledCards[3];
+                //CardsShuffler shuffler = new CardsShuffler();
+                //var shuffledCards = shuffler.Shuffle();
+                //PlayerCards[PlayerPosition.South] = shuffledCards[0];
+                //PlayerCards[PlayerPosition.East] = shuffledCards[1];
+                //PlayerCards[PlayerPosition.North] = shuffledCards[2];
+                //PlayerCards[PlayerPosition.West] = shuffledCards[3];
 
             }
 

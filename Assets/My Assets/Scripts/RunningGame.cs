@@ -31,22 +31,22 @@ namespace cardgame
             challengeLabel.text = playerNames[0] + " VS " + playerNames[1];
 
             //We then check if the userId of the next player is equal to ours
-            //if (turnStatus == UserManager.instance._userid)
-            //{
-            //    //If it is, then we say it's your turn
-            //    statusLabel.text = "Your Turn!";
-            //}
-            //else
-            //{
-            //    for (int i = 0; i < playerIds.Count; i++)
-            //    {
-            //        //else find the player whose Id does match and return their name
-            //        if (playerIds[i] == turnStatus)
-            //        {
-            //            statusLabel.text = playerNames[i] + "'s Turn!";
-            //        }
-            //    }
-            //}
+            if (turnStatus == PlayerPrefs.GetString("userId"))
+            {
+                //If it is, then we say it's your turn
+                statusLabel.text = "Your Turn!";
+            }
+            else
+            {
+                for (int i = 0; i < playerIds.Count; i++)
+                {
+                    //else find the player whose Id does match and return their name
+                    if (playerIds[i] == turnStatus)
+                    {
+                        statusLabel.text = playerNames[i] + "'s Turn!";
+                    }
+                }
+            }
         }
 
         //Start game gets called OnClick of the play button

@@ -52,9 +52,6 @@
     <Reference Include="UnityEngine">
       <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Advertisements">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Advertisements.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
@@ -69,9 +66,6 @@
     </Reference>
     <Reference Include="UnityEngine.HoloLens">
       <HintPath>Library\UnityAssemblies\UnityEngine.HoloLens.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Purchasing">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Purchasing.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.VR">
       <HintPath>Library\UnityAssemblies\UnityEngine.VR.dll</HintPath>
@@ -119,19 +113,28 @@
     <Compile Include="Assets\GameSparks\Platforms\WebSocketController.cs" />
     <Compile Include="Assets\GameSparks\TestUI\GameSparksTestUI.cs" />
     <Compile Include="Assets\My Assets\Scripts\BackButtonManager.cs" />
-    <Compile Include="Assets\My Assets\Scripts\FBFriendManager.cs.cs" />
+    <Compile Include="Assets\My Assets\Scripts\GameFriendManager.cs" />
     <Compile Include="Assets\My Assets\Scripts\GameJoin.cs.cs" />
+    <Compile Include="Assets\My Assets\Scripts\GameLevelManager.cs" />
+    <Compile Include="Assets\My Assets\Scripts\GameLoadingScene.cs" />
+    <Compile Include="Assets\My Assets\Scripts\GameMainScene.cs" />
+    <Compile Include="Assets\My Assets\Scripts\GamePlayChat.cs" />
+    <Compile Include="Assets\My Assets\Scripts\GamePlayManager.cs" />
+    <Compile Include="Assets\My Assets\Scripts\GameProfileManager.cs" />
     <Compile Include="Assets\My Assets\Scripts\GameSceneManager.cs" />
     <Compile Include="Assets\My Assets\Scripts\GameSparksManager.cs" />
+    <Compile Include="Assets\My Assets\Scripts\GameStoreManager.cs" />
+    <Compile Include="Assets\My Assets\Scripts\GameUIButtonManager.cs" />
     <Compile Include="Assets\My Assets\Scripts\Landing.cs" />
-    <Compile Include="Assets\My Assets\Scripts\Loading.cs" />
-    <Compile Include="Assets\My Assets\Scripts\MainScene.cs" />
-    <Compile Include="Assets\My Assets\Scripts\ProfileManager.cs" />
+    <Compile Include="Assets\My Assets\Scripts\MultiplayerChallenge.cs" />
+    <Compile Include="Assets\My Assets\Scripts\PlayerCards.cs" />
+    <Compile Include="Assets\My Assets\Scripts\QuitConfirmUI.cs" />
     <Compile Include="Assets\My Assets\Scripts\RunningGame.cs" />
     <Compile Include="Assets\My Assets\Scripts\SinglePlayer\Bid.cs" />
     <Compile Include="Assets\My Assets\Scripts\SinglePlayer\Bidding.cs" />
     <Compile Include="Assets\My Assets\Scripts\SinglePlayer\BiddingState.cs" />
     <Compile Include="Assets\My Assets\Scripts\SinglePlayer\Card.cs" />
+    <Compile Include="Assets\My Assets\Scripts\SinglePlayer\CardDeck.cs" />
     <Compile Include="Assets\My Assets\Scripts\SinglePlayer\CardsShuffler.cs" />
     <Compile Include="Assets\My Assets\Scripts\SinglePlayer\GamePlay.cs" />
     <Compile Include="Assets\My Assets\Scripts\SinglePlayer\GamePlayState.cs" />
@@ -144,6 +147,118 @@
     <Compile Include="Assets\My Assets\Scripts\SinglePlayer\bots.cs" />
     <Compile Include="Assets\My Assets\Scripts\TableManager.cs" />
     <Compile Include="Assets\My Assets\Scripts\UserManager.cs" />
+    <Compile Include="Assets\My Assets\Scripts\VirtualGoodList.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Accordion\Accordion.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Accordion\AccordionElement.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Accordion\Tweening\FloatTween.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Accordion\Tweening\ITweenValue.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Accordion\Tweening\TweenRunner.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\ComboBox\AutoCompleteComboBox.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\ComboBox\ComboBox.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\ComboBox\DropDownList.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\ComboBox\DropDownListButton.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\ComboBox\DropDownListItem.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\BestFitOutline.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\CurvedText.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\CylinderText.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\Gradient.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\ImageExtended.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\LetterSpacing.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\NicerOutline.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\RaycastMask.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\Shaders\UIAdditiveEffect.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\Shaders\UIImageCrop.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\Shaders\UILinearDodgeEffect.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\Shaders\UIMultiplyEffect.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\Shaders\UIScreenEffect.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\Shaders\UISoftAdditiveEffect.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\ShineEffect.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\ShineEffector.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\SoftMaskScript.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\UIFlippable.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Effects\UIParticleSystem.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\HSVPicker\ColorPickerTester.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\HSVPicker\HSVPicker.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\HSVPicker\HSVSliderEvent.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\HSVPicker\HSVUtil.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\HSVPicker\HexRGB.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\HSVPicker\HsvBoxSelector.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\HSVPicker\HsvSliderPicker.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\InputModules\AimerInputModule.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\InputModules\GamePadInputModule.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Layout\CurvedLayout.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Layout\FlowLayoutGroup.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Layout\HorizontalScrollSnap.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Layout\RadialLayout.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Layout\ScrollSnap.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Layout\TileSizeFitter.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Layout\UIVerticalScroller.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Layout\UIVerticalScrollerDemo\Scripts\ScrollingCalendar.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Layout\VerticalScrollSnap.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Primitives\DiamondGraph.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Primitives\UICircle.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Primitives\UICornerCut.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Primitives\UILineRenderer.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Primitives\UILineTextureRenderer.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Primitives\UIMesh.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Primitives\UIPolygon.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Primitives\UIPrimitiveBase.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\ReorderableList\ReorderableList.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\ReorderableList\ReorderableListContent.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\ReorderableList\ReorderableListDebug.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\ReorderableList\ReorderableListElement.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\RescalingPanels\RescaleDragPanel.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\RescalingPanels\RescalePanel.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\RescalingPanels\ResizePanel.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\SelectionBox\ExampleSelectable.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\SelectionBox\IBoxSelectable.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\SelectionBox\SelectionBox.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\TabNavigation.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\ToolTips\BoundTooltip\BoundTooltipItem.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\ToolTips\BoundTooltip\BoundTooltipTrigger.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\ToolTips\HoverTooltip.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\ToolTips\ToolTip.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\UIWindowBase.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\BezierPath.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\CLZF2.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\DragCorrector.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\ExtensionsToggle.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\ExtensionsToggleGroup.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\InputFieldEnterSubmit.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\InputFocus.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\PPIViewer.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\ReturnKeyTriggersButton.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\ScrollConflictManager.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\ScrollRectEx.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\ScrollRectExtensions.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\ScrollRectLinker.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\ScrollRectTweener.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Attributes\DontSaveField.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\ExampleScriptsAndClasses\TestClass.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\ExampleScriptsAndClasses\TestScript.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Non-Mono Classes\ObjectComponent.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Non-Mono Classes\SceneData.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Non-Mono Classes\SceneObject.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\ObjectIdentifier.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\SaveLoad.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\SaveLoadMenu.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Surrogates\ColorSurrogate.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Surrogates\GameObjectSurrogate.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Surrogates\QuaternionSurrogate.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Surrogates\Texture2DSurrogate.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Surrogates\TransformSurrogate.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Surrogates\Vector2Surrogate.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Surrogates\Vector3Surrogate.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Surrogates\Vector4Surrogate.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Utilities\TypeSystem.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\SetPropertyUtility.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\TestCompression.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\UIScrollToSelection.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\UIScrollToSelectionXY.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\UISelectableExtension.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\Utilities\switchToRectTransform.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\VR Extensions\VRCursor.cs" />
+    <Compile Include="Assets\unity-ui-extensions\Scripts\VR Extensions\VRInputModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\FacebookSDK\link.xml" />
@@ -155,6 +270,16 @@
     <None Include="Assets\Plugins\Metro\GameSparks.XML" />
     <None Include="Assets\Plugins\Metro\GameSparksRT.xml" />
     <None Include="Assets\Plugins\WP8\GameSparks.XML" />
+    <None Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Surrogates\SurrogatesReadMe.txt" />
+    <None Include="Assets\unity-ui-extensions\Shaders\SoftMaskShader.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\SoftMaskShaderText.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\UIAdditive.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\UIImageCrop.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\UILinearDodge.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\UIMultiply.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\UIParticleHidden.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\UIScreen.shader" />
+    <None Include="Assets\unity-ui-extensions\Shaders\UISoftAdditive.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
