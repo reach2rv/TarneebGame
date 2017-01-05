@@ -9,7 +9,6 @@ public class GameStoreManager : MonoBehaviour {
     public Text playerName, currency1, coinsTxt;
 
 
-
     void Start()
     {
         shopRef.SetActive(false);
@@ -117,9 +116,5 @@ public class GameStoreManager : MonoBehaviour {
                     }
                 });
     }
-
-
-
-
 
 }

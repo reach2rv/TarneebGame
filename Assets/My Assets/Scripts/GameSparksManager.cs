@@ -20,6 +20,8 @@ namespace cardgame
         public int loginDays;
         public List<string> _achievementsList;
         public List<GSData> Cards;
+        public GSEnumerable<string> _players;
+        public string _player1, _player2, _player3, _player4;
 
 
         //singleton for the gamesparks manager so it can be called from anywhere
@@ -47,10 +49,8 @@ namespace cardgame
             GS.GameSparksAvailable += GSAvailable;
             //playerconnectedtoGS();
             AchievementEarnedMessage.Listener += AchievementEarnedListener;
-            ChallengeStartedMessage.Listener += MatchFoundMessageListener;
+            ChallengeStartedMessage.Listener += ChallengeListener;
             MatchUpdatedMessage.Listener += MatchUpdatedMessageListner;
-
-
         }
 
         void GSAvailable(bool _isAvalable)
@@ -74,12 +74,16 @@ namespace cardgame
 
         //Achievement message  listener
         int cplay = 0;
-        private void MatchFoundMessageListener(GameSparks.Api.Messages.ChallengeStartedMessage _message)
+        private void ChallengeListener(GameSparks.Api.Messages.ChallengeStartedMessage _message)
         {
             var chalid = _message.Challenge.ChallengeId;
             PlayerPrefs.SetString("chalid", chalid);
             string playerid = PlayerPrefs.GetString("userId");
             Cards = _message.Challenge.ScriptData.GetGSDataList(playerid);
+            _player1 = _message.Challenge.ScriptData.GetString("player1");
+            _player2 = _message.Challenge.ScriptData.GetString("player2");
+            _player3 = _message.Challenge.ScriptData.GetString("player3");
+            _player4 = _message.Challenge.ScriptData.GetString("player4");
             StartCoroutine(LoadNewScene());
         }
 

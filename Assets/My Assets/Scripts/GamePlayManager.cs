@@ -14,9 +14,7 @@ using GameSparks.Api.Messages;
 [Serializable]
 public class GamePlayManager : MonoBehaviour
 {
-    public CanvasGroup deckCanvasGroup;
-    public CanvasGroup bidCanvasGroup;
-    public CanvasGroup buttonpannel;
+    public CanvasGroup deckCanvasGroup, bidCanvasGroup, buttonpannel;
     public GameObject[] pcards;
     public Sprite[] lastbidobject;
     public Sprite[] Cards_Club;
@@ -24,12 +22,9 @@ public class GamePlayManager : MonoBehaviour
     public Sprite[] Cards_Heart;
     public Sprite[] Cards_Spades;
     public Text Bid, Player1, Player2, Player3, MyPlayer;
-
-    private string ChallengeId, playerid, status, lastcard, _nxtplayer, _currentPlayer;
+    private string ChallengeId, playerid, status, lastcard, _nxtplayer, _currentPlayer, _player1, _player2, _player3, _player4;
     private bool isbidding, IsBidding, gotcards;
     private int bidcount, lastbid;
-    private System.Timers.Timer aTimer;
-    private string[] players;
 
     void Awake()
     {
@@ -39,15 +34,9 @@ public class GamePlayManager : MonoBehaviour
         Get_Cards();
         StartCoroutine(Get_MyTurn());
         ChallengeTurnTakenMessage.Listener += ChallengeTurnTakenMessageListner;
-
-        //StartCoroutine(GetCards());
-        //aTimer = new System.Timers.Timer(3000);
-        //aTimer.Elapsed += new ElapsedEventHandler(isactive);
-        //aTimer.AutoReset = true;
-        //aTimer.Enabled = true;
     }
 
-    public void Start()
+    void Start()
     {
         GameSparks.Api.Messages.ScriptMessage.Listener += GetMessages;
     }
@@ -79,7 +68,7 @@ public class GamePlayManager : MonoBehaviour
         }
     }
 
-    public void GetMessages(ScriptMessage message)
+    void GetMessages(ScriptMessage message)
     {
         if (message.ExtCode == "bid")
         {
@@ -179,13 +168,24 @@ public class GamePlayManager : MonoBehaviour
         }
     }
 
-
     void Status_GamePlay()
     {
-        string myplayer = PlayerPrefs.GetString("degj");
+        string myplayer = PlayerPrefs.GetString("UserId");
         if (myplayer == _currentPlayer)
         {
-            myplayer_cards();
+            
+        }
+        if (myplayer == _currentPlayer)
+        {
+
+        }
+        if (myplayer == _currentPlayer)
+        {
+
+        }
+        if (myplayer == _currentPlayer)
+        {
+
         }
     }
 
@@ -369,6 +369,15 @@ public class GamePlayManager : MonoBehaviour
             }
 
         }
+    }
+
+    void Get_Player_Position()
+    {
+        GameObject go = GameObject.Find("Main_API");
+        _player1 = go.GetComponent<GameSparksManager>()._player1;
+        _player2 = go.GetComponent<GameSparksManager>()._player1;
+        _player3 = go.GetComponent<GameSparksManager>()._player1;
+        _player4 = go.GetComponent<GameSparksManager>()._player1;
     }
 
     IEnumerator Get_MyTurn()
