@@ -1,0 +1,67 @@
+fileFormatVersion: 2
+guid: 4beaabe033c2720408868eadc80ed151
+timeCreated: 1483205602
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - deckCanvasGroup: {instanceID: 0}
+  - bidCanvasGroup: {instanceID: 0}
+  - buttonpannel: {instanceID: 0}
+  - C14: {fileID: 21300000, guid: 490f84ec8b2c4d84e81788ac6343a597, type: 3}
+  - C2: {fileID: 21300000, guid: f72414c775076fd48a061ca430da6221, type: 3}
+  - C3: {fileID: 21300000, guid: ca62a40dd1bb2784b921bc0414f5d8e6, type: 3}
+  - C4: {fileID: 21300000, guid: 355d08a31062e77468e6a79e60571e81, type: 3}
+  - C5: {fileID: 21300000, guid: 35be7e74b26b5c34d8d5aa1b812e220a, type: 3}
+  - C6: {fileID: 21300000, guid: e0e54e2568a7ba743892fa488bf5157d, type: 3}
+  - C7: {fileID: 21300000, guid: 4fe0ddf89b3e7f244b6ac3b14d67d7e8, type: 3}
+  - C8: {fileID: 21300000, guid: 5d6db6974be08da4fa0a92ad56c92474, type: 3}
+  - C9: {fileID: 21300000, guid: ae1a29bfe2a3a5f46ad72c025bbc36bf, type: 3}
+  - C10: {fileID: 21300000, guid: 3417b09475bf749419ac6ea3c365c2f3, type: 3}
+  - C11: {fileID: 21300000, guid: 13e36a2156694c94ba4377e0748a2296, type: 3}
+  - C12: {fileID: 21300000, guid: 9d3b1149dc9fa9042a7060043249126e, type: 3}
+  - C13: {fileID: 21300000, guid: 91f9919711b38cf43a90f7800c09baea, type: 3}
+  - D14: {fileID: 21300000, guid: 3057cc3f10b1f3d498827fa6c1fe47e7, type: 3}
+  - D2: {fileID: 21300000, guid: 4e16cf3f1e7f79342a5ff9e56a3984f1, type: 3}
+  - D3: {fileID: 21300000, guid: 45f2eebd640a4f845b8e182a57b6060a, type: 3}
+  - D4: {fileID: 21300000, guid: dd4046c1f4208e449b7ad60b6711fb91, type: 3}
+  - D5: {fileID: 21300000, guid: 7a23d6e0e222e964db54ebb55245e3b3, type: 3}
+  - D6: {fileID: 21300000, guid: 9b248dc371b6b5a4f928a272dd03c9f7, type: 3}
+  - D7: {fileID: 21300000, guid: 8cd5c786bcc85394a9344174afd1a526, type: 3}
+  - D8: {fileID: 21300000, guid: c99dd3bf0073ab24abffcc1e8c9e8fe2, type: 3}
+  - D9: {fileID: 21300000, guid: 4a4456c827f1517478b4af1d47b8c2b0, type: 3}
+  - D10: {fileID: 21300000, guid: df54bd712de594449bd5c11cb7ea2340, type: 3}
+  - D11: {fileID: 21300000, guid: 18d0c6ad13294184aad1e61934ff7a8b, type: 3}
+  - D12: {fileID: 21300000, guid: 2d0b1b3cbbd50e74f95db6f02d4a3349, type: 3}
+  - D13: {fileID: 21300000, guid: c338279f2524336448d8316526c61446, type: 3}
+  - H14: {fileID: 21300000, guid: 325a27e3a4628184780ead04d92e4962, type: 3}
+  - H2: {fileID: 21300000, guid: aa6929bf052f9854fb2871f7c4a9ebee, type: 3}
+  - H3: {fileID: 21300000, guid: 886f1f84d39790d41aef9b6090b33309, type: 3}
+  - H4: {fileID: 21300000, guid: 3459b48f747e2c44ca3b535f0d023f78, type: 3}
+  - H5: {fileID: 21300000, guid: 1235b29cf613f2d46ab7d1660345765a, type: 3}
+  - H6: {fileID: 21300000, guid: 1e1f4f901ede62c4886eb9f910f8158d, type: 3}
+  - H7: {fileID: 21300000, guid: 0cfc0ba687ccd64438f0a8de4ac8bbee, type: 3}
+  - H8: {fileID: 21300000, guid: 2664e6a65251b1b4797d1bc2556e85fa, type: 3}
+  - H9: {fileID: 21300000, guid: e6fd581b69dd94742bf5d8ba6223150f, type: 3}
+  - H10: {fileID: 21300000, guid: 473a55638a6fdbe489c9deb6cc0a7320, type: 3}
+  - H11: {fileID: 21300000, guid: aa6498f35fb8bf84a8fec0239e2070ce, type: 3}
+  - H12: {fileID: 21300000, guid: 551dd6ae3e49da84e94fb03109e21074, type: 3}
+  - H13: {fileID: 21300000, guid: e7cad91fda566bb43aa9668fe237fabf, type: 3}
+  - S14: {fileID: 21300000, guid: 23b05ff86df06cb46abb61df19798904, type: 3}
+  - S2: {fileID: 21300000, guid: 4c1fbfba53d1aa4488be03f8503edfb4, type: 3}
+  - S3: {fileID: 21300000, guid: 76a11475fcdc22141b6034b09e17624e, type: 3}
+  - S4: {fileID: 21300000, guid: c3be0687072a7b949a3072609a8cc85a, type: 3}
+  - S5: {fileID: 21300000, guid: f04068eb3ffedbc4981d52b16b3bc01a, type: 3}
+  - S6: {fileID: 21300000, guid: 8beb07cd3c7a38a4c866b920376ab331, type: 3}
+  - S7: {fileID: 21300000, guid: 4b034b195f9f09c4190bcdf7691e59ae, type: 3}
+  - S8: {fileID: 21300000, guid: 902fde32a4d748b43abd2230e04a5af2, type: 3}
+  - S9: {fileID: 21300000, guid: 1012a94ba50a45945806ac3812e151c9, type: 3}
+  - S10: {fileID: 21300000, guid: b53fd6d4c1f25ae4ca3ee68e9d5deadb, type: 3}
+  - S11: {fileID: 21300000, guid: 3edda543defac39438451aca2a418ba3, type: 3}
+  - S12: {fileID: 21300000, guid: a9d045d7fedc5e04bb2de4e6bbe5485a, type: 3}
+  - S13: {fileID: 21300000, guid: 4e6aa2a76179386479437d01c1805e53, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

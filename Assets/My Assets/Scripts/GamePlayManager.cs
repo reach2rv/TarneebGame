@@ -378,6 +378,24 @@ public class GamePlayManager : MonoBehaviour
         _player2 = go.GetComponent<GameSparksManager>()._player1;
         _player3 = go.GetComponent<GameSparksManager>()._player1;
         _player4 = go.GetComponent<GameSparksManager>()._player1;
+
+        new GetTeamRequest()
+            .SetTeamId("")
+            .Send((response) =>
+            {
+                GSEnumerable<GetTeamResponse._Player> members = response.Members;
+                foreach (GetTeamResponse._Player user in members)
+                {
+                    if (user.Id == PlayerPrefs.GetString("UserId"))
+                        {
+                            Player1.text = user.DisplayName;
+                    }
+                }
+
+
+
+            });
+
     }
 
     IEnumerator Get_MyTurn()

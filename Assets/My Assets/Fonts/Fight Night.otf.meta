@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: cce9823cb0dd65943966c9fb3c1a4892
+timeCreated: 1481457246
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Fight Night
+  fontNames:
+  - Fight Night
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
