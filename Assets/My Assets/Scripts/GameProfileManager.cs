@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace cardgame
 {
-    public class ProfileManager : MonoBehaviour
+    public class GameProfileManager : MonoBehaviour
     {
 
         public Text CSilver, CGold, CSwag, Rank, Win;

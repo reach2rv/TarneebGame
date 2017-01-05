@@ -10,7 +10,7 @@ using Facebook.Unity;
 
 namespace cardgame
 {
-    public class MainScene : MonoBehaviour
+    public class GameMainScene : MonoBehaviour
     {
         public GameObject levelmanager, player1, player2, player3, player4;
         public Text CSilver, CGold, CSwag, UserName, Players;

@@ -8,7 +8,7 @@ namespace thecardsgame
 
     public class Bots : MonoBehaviour
     {
-        public PlayerPosition CurrentTurn { get; }
+        public PlayerPosition CurrentTurn { get; set; }
         private GameSession gameSession { get; set; }
         private GamePlay gamePlay;
         public Dictionary<PlayerPosition, Cards> CurrentTrick { get; private set; }
@@ -93,7 +93,7 @@ namespace thecardsgame
             return maxCard;
         }
 
-        private Suit trumpSuit { get; }
+        private Suit trumpSuit { get; set; }
         private int CompareCards(Cards card1, Cards card2)
         {
             Suit tempTrump = trumpSuit;

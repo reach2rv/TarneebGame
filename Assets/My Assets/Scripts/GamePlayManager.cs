@@ -21,7 +21,7 @@ public class GamePlayManager : MonoBehaviour
     public Sprite[] Cards_Diamond;
     public Sprite[] Cards_Heart;
     public Sprite[] Cards_Spades;
-    public Text Bid, Player1, Player2, Player3, MyPlayer;
+    public Text Bid, Player2, Player3, Player4, MyPlayer;
     private string ChallengeId, playerid, status, lastcard, _nxtplayer, _currentPlayer, _player1, _player2, _player3, _player4;
     private bool isbidding, IsBidding, gotcards;
     private int bidcount, lastbid;
@@ -170,20 +170,19 @@ public class GamePlayManager : MonoBehaviour
 
     void Status_GamePlay()
     {
-        string myplayer = PlayerPrefs.GetString("UserId");
-        if (myplayer == _currentPlayer)
-        {
-            
-        }
-        if (myplayer == _currentPlayer)
+        if(_currentPlayer == _player1)
         {
 
         }
-        if (myplayer == _currentPlayer)
+        else if (_currentPlayer == _player2)
         {
 
         }
-        if (myplayer == _currentPlayer)
+        else if (_currentPlayer == _player3)
+        {
+
+        }
+        else
         {
 
         }
@@ -374,28 +373,90 @@ public class GamePlayManager : MonoBehaviour
     void Get_Player_Position()
     {
         GameObject go = GameObject.Find("Main_API");
-        _player1 = go.GetComponent<GameSparksManager>()._player1;
-        _player2 = go.GetComponent<GameSparksManager>()._player1;
-        _player3 = go.GetComponent<GameSparksManager>()._player1;
-        _player4 = go.GetComponent<GameSparksManager>()._player1;
+       // _player1 = go.GetComponent<GameSparksManager>()._player1;
+       // _player2 = go.GetComponent<GameSparksManager>()._player1;
+      //  _player3 = go.GetComponent<GameSparksManager>()._player1;
+      //  _player4 = go.GetComponent<GameSparksManager>()._player1;
 
         new GetTeamRequest()
             .SetTeamId("")
             .Send((response) =>
             {
                 GSEnumerable<GetTeamResponse._Player> members = response.Members;
-                foreach (GetTeamResponse._Player user in members)
-                {
-                    if (user.Id == PlayerPrefs.GetString("UserId"))
+                if (response.Owner.Id == PlayerPrefs.GetString("UserId"))
+                {                   
+                    foreach (GetTeamResponse._Player players in members)
+                    {
+                        if (players.Id == PlayerPrefs.GetString("UserId"))
                         {
-                            Player1.text = user.DisplayName;
+                            MyPlayer.text = players.DisplayName;
+                            _player1 = players.Id;
+                        }
+                        else
+                        {
+                            Player3.text = players.DisplayName;
+                            _player3 = players.Id;
+                        }
                     }
                 }
+                else
+                {
+                    foreach (GetTeamResponse._Player players in members)
+                    {
+                        if (string.IsNullOrEmpty(Player2.text))
+                        {
+                            Player2.text = players.DisplayName;
+                            _player2 = players.Id;
+                        }
+                        else
+                        {
+                            Player4.text = players.DisplayName;
+                            _player4 = players.Id;
+                        }
+                    }
 
-
-
+                } 
             });
 
+        new GetTeamRequest()
+            .SetTeamId("")
+            .Send((response) =>
+            {
+                GSEnumerable<GetTeamResponse._Player> members = response.Members;
+                if (response.Owner.Id == PlayerPrefs.GetString("UserId"))
+                {
+                    foreach (GetTeamResponse._Player players in members)
+                    {
+                        if (players.Id == PlayerPrefs.GetString("UserId"))
+                        {
+                            MyPlayer.text = players.DisplayName;
+                            _player1 = players.Id;
+                        }
+                        else
+                        {
+                            Player3.text = players.DisplayName;
+                            _player3 = players.Id;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (GetTeamResponse._Player players in members)
+                    {
+                        if (string.IsNullOrEmpty(Player2.text))
+                        {
+                            Player2.text = players.DisplayName;
+                            _player2 = players.Id;
+                        }
+                        else
+                        {
+                            Player4.text = players.DisplayName;
+                            _player4 = players.Id;
+                        }
+                    }
+
+                }
+            });
     }
 
     IEnumerator Get_MyTurn()
