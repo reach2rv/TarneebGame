@@ -15,13 +15,12 @@ namespace cardgame
 {
     public class GameSparksManager : MonoBehaviour
     {
-        public string displayName, UserId, players;
+        public string displayName, UserId, players, _player1, _player2, _player3, _player4, _nxtplayer;
         public long cSilver, cGold, cSwag;
         public int loginDays;
         public List<string> _achievementsList;
         public List<GSData> Cards;
         public GSEnumerable<string> _players;
-        public string _player1, _player2, _player3, _player4;
 
 
         //singleton for the gamesparks manager so it can be called from anywhere
@@ -50,7 +49,7 @@ namespace cardgame
             //playerconnectedtoGS();
             AchievementEarnedMessage.Listener += AchievementEarnedListener;
             ChallengeStartedMessage.Listener += ChallengeListener;
-            MatchUpdatedMessage.Listener += MatchUpdatedMessageListner;
+            //MatchUpdatedMessage.Listener += MatchUpdatedMessageListner;
         }
 
         void GSAvailable(bool _isAvalable)
@@ -74,49 +73,57 @@ namespace cardgame
 
         //Achievement message  listener
         int cplay = 0;
-        private void ChallengeListener(GameSparks.Api.Messages.ChallengeStartedMessage _message)
+        private void ChallengeListener(ChallengeStartedMessage _message)
         {
+            string playerid = PlayerPrefs.GetString("userId");
+            Debug.Log("Fetching Cards from Server");
+            Cards = _message.Challenge.ScriptData.GetGSDataList(playerid);
+            if (Cards == null)
+            {
+                Cards = _message.Challenge.ScriptData.GetGSDataList(playerid);
+            }
             var chalid = _message.Challenge.ChallengeId;
             PlayerPrefs.SetString("chalid", chalid);
-            string playerid = PlayerPrefs.GetString("userId");
-            Cards = _message.Challenge.ScriptData.GetGSDataList(playerid);
-            _player1 = _message.Challenge.ScriptData.GetString("player1");
-            _player2 = _message.Challenge.ScriptData.GetString("player2");
-            _player3 = _message.Challenge.ScriptData.GetString("player3");
-            _player4 = _message.Challenge.ScriptData.GetString("player4");
+            _nxtplayer = _message.Challenge.NextPlayer;
             StartCoroutine(LoadNewScene());
         }
 
-        private void MatchUpdatedMessageListner(GameSparks.Api.Messages.MatchUpdatedMessage _message)
-        {
-            var addedplayers = _message.AddedPlayers;
-            GameObject go = GameObject.Find("Canvas_Main/wait_match/Box");
-            if (go != null)
-            {
-                var player1 = go.transform.Find("Player_1").gameObject;
-                var player2 = go.transform.Find("Player_2").gameObject;
-                var player3 = go.transform.Find("Player_3").gameObject;
-                var player4 = go.transform.Find("Player_4").gameObject;
+        //private void MatchUpdatedMessageListner(GameSparks.Api.Messages.MatchUpdatedMessage _message)
+        //{
+        //    var addedplayers = _message.AddedPlayers;
+        //    GameObject go = GameObject.Find("Canvas_Main/wait_match/Box");
+        //    if (go != null)
+        //    {
+        //        var player1 = go.transform.Find("Player_1").gameObject;
+        //        var player2 = go.transform.Find("Player_2").gameObject;
+        //        var player3 = go.transform.Find("Player_3").gameObject;
+        //        var player4 = go.transform.Find("Player_4").gameObject;
 
-                switch (addedplayers.Count)
-                {
-                    case 1:
-                        player1.SetActive(true);
-                        break;
-                    case 2:
-                        player2.SetActive(true);
-                        break;
-                    case 3:
-                        player3.SetActive(true);
-                        break;
-                    case 4:
-                        player4.SetActive(true);
-                        break;
-                }
+        //        switch (addedplayers.Count)
+        //        {
+        //            case 1:
+        //                player1.SetActive(true);
+        //                break;
+        //            case 2:
+        //                player1.SetActive(true);
+        //                player2.SetActive(true);
+        //                break;
+        //            case 3:
+        //                player1.SetActive(true);
+        //                player2.SetActive(true);
+        //                player3.SetActive(true);
+        //                break;
+        //            case 4:
+        //                player1.SetActive(true);
+        //                player2.SetActive(true);
+        //                player3.SetActive(true);
+        //                player4.SetActive(true);
+        //                break;
+        //        }
 
-            }
+        //    }
 
-        }
+        // }
 
         IEnumerator LoadNewScene()
         {

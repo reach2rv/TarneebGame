@@ -12,7 +12,7 @@ using Facebook.Unity;
 namespace cardgame
 {
 
-    public class Loading : MonoBehaviour
+    public class GameLoadingScene : MonoBehaviour
     {
         private bool loadScene = false;
 

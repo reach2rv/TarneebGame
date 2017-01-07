@@ -161,6 +161,7 @@
     <Compile Include="Assets\GameSparks\Editor\GameSparksRestWindow.cs" />
     <Compile Include="Assets\GameSparks\Editor\GameSparksSettingsEditor.cs" />
     <Compile Include="Assets\GameSparks\Editor\GameSparksUnityInspector.cs" />
+    <Compile Include="Assets\Unity-Logs-Viewer\Reporter\Editor\ReporterEditor.cs" />
     <Compile Include="Assets\unity-ui-extensions\Scripts\Accordion\Editor\AccordionElementEditor.cs" />
     <Compile Include="Assets\unity-ui-extensions\Scripts\Editor\CanvasGroupActivator.cs" />
     <Compile Include="Assets\unity-ui-extensions\Scripts\Editor\CompressionTests.cs" />
@@ -177,6 +178,7 @@
     <None Include="Assets\Plugins\Metro\GameSparks.XML" />
     <None Include="Assets\Plugins\Metro\GameSparksRT.xml" />
     <None Include="Assets\Plugins\WP8\GameSparks.XML" />
+    <None Include="Assets\StreamingAssets\build_info.txt" />
     <None Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Surrogates\SurrogatesReadMe.txt" />
     <None Include="Assets\unity-ui-extensions\Shaders\SoftMaskShader.shader" />
     <None Include="Assets\unity-ui-extensions\Shaders\SoftMaskShaderText.shader" />

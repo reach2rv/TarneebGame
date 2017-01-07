@@ -154,6 +154,12 @@
     <Compile Include="Assets\My Assets\Scripts\TableManager.cs" />
     <Compile Include="Assets\My Assets\Scripts\UserManager.cs" />
     <Compile Include="Assets\My Assets\Scripts\VirtualGoodList.cs" />
+    <Compile Include="Assets\Unity-Logs-Viewer\Reporter\MultiKeyDictionary.cs" />
+    <Compile Include="Assets\Unity-Logs-Viewer\Reporter\Reporter.cs" />
+    <Compile Include="Assets\Unity-Logs-Viewer\Reporter\ReporterGUI.cs" />
+    <Compile Include="Assets\Unity-Logs-Viewer\Reporter\ReporterMessageReceiver.cs" />
+    <Compile Include="Assets\Unity-Logs-Viewer\Reporter\Test\Rotate.cs" />
+    <Compile Include="Assets\Unity-Logs-Viewer\Reporter\Test\TestReporter.cs" />
     <Compile Include="Assets\unity-ui-extensions\Scripts\Accordion\Accordion.cs" />
     <Compile Include="Assets\unity-ui-extensions\Scripts\Accordion\AccordionElement.cs" />
     <Compile Include="Assets\unity-ui-extensions\Scripts\Accordion\Tweening\FloatTween.cs" />
@@ -276,6 +282,7 @@
     <None Include="Assets\Plugins\Metro\GameSparks.XML" />
     <None Include="Assets\Plugins\Metro\GameSparksRT.xml" />
     <None Include="Assets\Plugins\WP8\GameSparks.XML" />
+    <None Include="Assets\StreamingAssets\build_info.txt" />
     <None Include="Assets\unity-ui-extensions\Scripts\Utilities\Serialization\Surrogates\SurrogatesReadMe.txt" />
     <None Include="Assets\unity-ui-extensions\Shaders\SoftMaskShader.shader" />
     <None Include="Assets\unity-ui-extensions\Shaders\SoftMaskShaderText.shader" />

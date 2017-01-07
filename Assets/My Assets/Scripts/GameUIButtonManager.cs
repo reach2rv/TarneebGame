@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace cardgame
 {
-    public class UIButtonManager : MonoBehaviour
+    public class GameUIButtonManager : MonoBehaviour
     {
         /// <summary>
         /// Button Manager Class loaded on main non destroyable Game object
@@ -32,7 +32,7 @@ namespace cardgame
         {
             //PlayerPrefs.SetString("previousLevel", SceneManager.GetActiveScene().name);
             GSceneManager.GetComponent<GameSceneManager>().AddToLoadedScenes(SceneManager.GetActiveScene().name);
-            SceneManager.LoadScene("04_1_Customize");
+            SceneManager.LoadScene("LoginLanding");
         }
 
         public void btnQplay()
@@ -152,7 +152,7 @@ namespace cardgame
         public void btnFBconnect()
         {
             GameObject go = GameObject.Find("Canvas_Main");
-            StartCoroutine(go.GetComponent<MainScene>().FBLogin());
+            StartCoroutine(go.GetComponent<GameMainScene>().FBLogin());
         }
 
         public void btnPlayfrnd()

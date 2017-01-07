@@ -103,6 +103,49 @@ namespace GameSparks.Api.Requests{
 		}			
 	}
 	
+	public class LogEventRequest_get_cards : GSTypedRequest<LogEventRequest_get_cards, LogEventResponse>
+	{
+	
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogEventResponse (response);
+		}
+		
+		public LogEventRequest_get_cards() : base("LogEventRequest"){
+			request.AddString("eventKey", "get_cards");
+		}
+		
+		public LogEventRequest_get_cards Set_chal( string value )
+		{
+			request.AddString("chal", value);
+			return this;
+		}
+	}
+	
+	public class LogChallengeEventRequest_get_cards : GSTypedRequest<LogChallengeEventRequest_get_cards, LogChallengeEventResponse>
+	{
+		public LogChallengeEventRequest_get_cards() : base("LogChallengeEventRequest"){
+			request.AddString("eventKey", "get_cards");
+		}
+		
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogChallengeEventResponse (response);
+		}
+		
+		/// <summary>
+		/// The challenge ID instance to target
+		/// </summary>
+		public LogChallengeEventRequest_get_cards SetChallengeInstanceId( String challengeInstanceId )
+		{
+			request.AddString("challengeInstanceId", challengeInstanceId);
+			return this;
+		}
+		public LogChallengeEventRequest_get_cards Set_chal( string value )
+		{
+			request.AddString("chal", value);
+			return this;
+		}
+	}
+	
 	public class LogEventRequest_level_event : GSTypedRequest<LogEventRequest_level_event, LogEventResponse>
 	{
 	
@@ -184,6 +227,38 @@ namespace GameSparks.Api.Requests{
 		public LogChallengeEventRequest_Match_Event Set_match_code( string value )
 		{
 			request.AddString("match_code", value);
+			return this;
+		}
+	}
+	
+	public class LogEventRequest_pass : GSTypedRequest<LogEventRequest_pass, LogEventResponse>
+	{
+	
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogEventResponse (response);
+		}
+		
+		public LogEventRequest_pass() : base("LogEventRequest"){
+			request.AddString("eventKey", "pass");
+		}
+	}
+	
+	public class LogChallengeEventRequest_pass : GSTypedRequest<LogChallengeEventRequest_pass, LogChallengeEventResponse>
+	{
+		public LogChallengeEventRequest_pass() : base("LogChallengeEventRequest"){
+			request.AddString("eventKey", "pass");
+		}
+		
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogChallengeEventResponse (response);
+		}
+		
+		/// <summary>
+		/// The challenge ID instance to target
+		/// </summary>
+		public LogChallengeEventRequest_pass SetChallengeInstanceId( String challengeInstanceId )
+		{
+			request.AddString("challengeInstanceId", challengeInstanceId);
 			return this;
 		}
 	}
@@ -270,6 +345,49 @@ namespace GameSparks.Api.Requests{
 		public LogChallengeEventRequest_tarneeb Set_trump( string value )
 		{
 			request.AddString("trump", value);
+			return this;
+		}
+	}
+	
+	public class LogEventRequest_test : GSTypedRequest<LogEventRequest_test, LogEventResponse>
+	{
+	
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogEventResponse (response);
+		}
+		
+		public LogEventRequest_test() : base("LogEventRequest"){
+			request.AddString("eventKey", "test");
+		}
+		
+		public LogEventRequest_test Set_team( string value )
+		{
+			request.AddString("team", value);
+			return this;
+		}
+	}
+	
+	public class LogChallengeEventRequest_test : GSTypedRequest<LogChallengeEventRequest_test, LogChallengeEventResponse>
+	{
+		public LogChallengeEventRequest_test() : base("LogChallengeEventRequest"){
+			request.AddString("eventKey", "test");
+		}
+		
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogChallengeEventResponse (response);
+		}
+		
+		/// <summary>
+		/// The challenge ID instance to target
+		/// </summary>
+		public LogChallengeEventRequest_test SetChallengeInstanceId( String challengeInstanceId )
+		{
+			request.AddString("challengeInstanceId", challengeInstanceId);
+			return this;
+		}
+		public LogChallengeEventRequest_test Set_team( string value )
+		{
+			request.AddString("team", value);
 			return this;
 		}
 	}
@@ -682,5 +800,31 @@ namespace GameSparks.Api.Responses{
 
 namespace GameSparks.Api.Messages {
 
+		public class ScriptMessage_bid : ScriptMessage {
+		
+			public new static Action<ScriptMessage_bid> Listener;
+	
+			public ScriptMessage_bid(GSData data) : base(data){}
+	
+			private static ScriptMessage_bid Create(GSData data)
+			{
+				ScriptMessage_bid message = new ScriptMessage_bid (data);
+				return message;
+			}
+	
+			static ScriptMessage_bid()
+			{
+				handlers.Add (".ScriptMessage_bid", Create);
+	
+			}
+			
+			override public void NotifyListeners()
+			{
+				if (Listener != null)
+				{
+					Listener (this);
+				}
+			}
+		}
 
 }
