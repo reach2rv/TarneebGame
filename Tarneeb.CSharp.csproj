@@ -124,6 +124,7 @@
     <Compile Include="Assets\My Assets\Scripts\GameLevelManager.cs" />
     <Compile Include="Assets\My Assets\Scripts\GameLoadingScene.cs" />
     <Compile Include="Assets\My Assets\Scripts\GameMainScene.cs" />
+    <Compile Include="Assets\My Assets\Scripts\GameMultiplayerChallenge.cs" />
     <Compile Include="Assets\My Assets\Scripts\GamePlayChat.cs" />
     <Compile Include="Assets\My Assets\Scripts\GamePlayManager.cs" />
     <Compile Include="Assets\My Assets\Scripts\GameProfileManager.cs" />
@@ -132,7 +133,6 @@
     <Compile Include="Assets\My Assets\Scripts\GameStoreManager.cs" />
     <Compile Include="Assets\My Assets\Scripts\GameUIButtonManager.cs" />
     <Compile Include="Assets\My Assets\Scripts\Landing.cs" />
-    <Compile Include="Assets\My Assets\Scripts\MultiplayerChallenge.cs" />
     <Compile Include="Assets\My Assets\Scripts\PlayerCards.cs" />
     <Compile Include="Assets\My Assets\Scripts\QuitConfirmUI.cs" />
     <Compile Include="Assets\My Assets\Scripts\RunningGame.cs" />

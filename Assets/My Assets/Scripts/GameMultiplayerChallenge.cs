@@ -9,7 +9,7 @@ using System;
 namespace cardgame
 {
 
-    public class MultiplayerChallenge : MonoBehaviour
+    public class GameMultiplayerChallenge : MonoBehaviour
     {
 
         private string challengeId = "";
@@ -29,29 +29,6 @@ namespace cardgame
             JoinOrCreateChallenge();
         }
 
-        public IEnumerator GetCards()
-        {
-            Debug.Log("Fetching Cards Data...");
-            bool gotcards = false;
-            new GetChallengeRequest()
-                .SetChallengeInstanceId(PlayerPrefs.GetString("chalid"))
-                .Send((response) => {
-
-                    if (!response.HasErrors)
-                    {
-                        Debug.Log("Found Cards...");
-                        GSData cards = response.Challenge.ScriptData.GetGSData(PlayerPrefs.GetString("userId"));
-                        gotcards = true;
-
-                    }
-                    else
-                    {
-                        Debug.Log("Error Retrieving Leader board Data...");
-                    }
-
-                });
-            yield return new WaitUntil(() => gotcards == true);
-        }
         //attempts to join or create a new game
         // throw exception or error callback ?
         public void JoinOrCreateChallenge(Action<GSTypedResponse> success = null, Action<GSTypedResponse> error = null)
@@ -67,7 +44,7 @@ namespace cardgame
                     .SetChallengeShortCode(SHORTCODE)
                         .SetEndTime(System.DateTime.Now.AddMinutes(100))
                         .SetAccessType("PUBLIC")
-                        .SetMaxPlayers(2)
+                        .SetMaxPlayers(4)
                         .Send((createdChallenge) =>
                         {
                             if (createdChallenge.HasErrors)
@@ -124,5 +101,27 @@ namespace cardgame
 
 
         }
+
+
+        public void CreateTeble(System.Collections.Generic.List<string> usersToChallenge)
+        {
+            new GameSparks.Api.Requests.CreateChallengeRequest()
+                .SetChallengeShortCode(SHORTCODE)
+                .SetEndTime(System.DateTime.Now.AddMinutes(100))
+                .SetAccessType("PRIVATE")
+                .SetMaxPlayers(4)
+                .SetUsersToChallenge(usersToChallenge)
+                .Send((createdChallenge) =>
+                {
+                    if (createdChallenge.HasErrors)
+                    {
+                        Debug.LogError("error creating challenge:" + createdChallenge.Errors.JSON);
+                        //TODO handle error
+                        return;
+                    }
+                    isHost = true;
+                });
+        }
     }
+
 }

@@ -85,6 +85,10 @@ namespace cardgame
             var chalid = _message.Challenge.ChallengeId;
             PlayerPrefs.SetString("chalid", chalid);
             _nxtplayer = _message.Challenge.NextPlayer;
+            _player1 = _message.Challenge.ScriptData.GetString("player1");
+            _player2 = _message.Challenge.ScriptData.GetString("player2");
+            _player3 = _message.Challenge.ScriptData.GetString("player3");
+            _player4 = _message.Challenge.ScriptData.GetString("player4");
             StartCoroutine(LoadNewScene());
         }
 
@@ -169,10 +173,46 @@ namespace cardgame
         IEnumerator PlayerDetails()
         {
             getaccountdetails();
-            yield return new WaitUntil(() => userid() == true);
+            yield return new WaitUntil(() => userid() == true);            
             setaccontdetails();
-
+            loginbonus();
         }
+
+        void loginbonus()
+        {
+            switch(loginDays)
+            {
+                case 1:
+                    CDC(1, 100, "Cr");
+                    break;
+                case 2:
+                    CDC(1, 250, "Cr");
+                    break;
+                case 3:
+                    CDC(1, 500, "Cr");
+                    break;
+                case 4:
+                    CDC(1, 750, "Cr");
+                    break;
+                case 5:
+                    CDC(1, 2000, "Cr");
+                    break;
+                case 6:
+                    CDC(1, 4750, "Cr");
+                    break;
+                case 7:
+                    CDC(1, 10000, "Cr");
+                    break;
+                case 8:
+                    CDC(1, 25000, "Cr");
+                    break;
+                case 9:
+                    CDC(1, 50000, "Cr");
+                    CDC(2, 25, "Cr");
+                    break;
+            }
+        }
+
         void GamesparksDeviceConnect()
         {
             new GameSparks.Api.Requests.DeviceAuthenticationRequest()
@@ -197,7 +237,6 @@ namespace cardgame
                         if (response.HasErrors)
                         {
                             Debug.Log(response.Errors);
-
                         }
                         else
                         {
@@ -209,7 +248,7 @@ namespace cardgame
                             cSilver = (long)response.Currency1;
                             cGold = (long)response.Currency2;
                             cSwag = (long)response.Currency3;
-                            //loginDays = (int)response.BaseData.GetInt("daysInrow");
+                            loginDays = (int)response.ScriptData.GetInt("daysInrow");
                             Debug.Log("Received Account Details");
                         }
                     });
@@ -449,12 +488,13 @@ namespace cardgame
             //userAvatar.sprite = Sprite.Create(www.texture, rect, new Vector2(0, 0), 125);
         }
 
-        void AddGold(int currencyRef, long amount)
+        void CDC(int id, long amount, string type)
         {
             Debug.Log("Calling AddCurrency ... ");
-            new GameSparks.Api.Requests.LogEventRequest_addcurrency1()
-                .Set_currencyRef(currencyRef)
+            new GameSparks.Api.Requests.LogChallengeEventRequest_CDC()
+                .Set_id(id)
                 .Set_amount(amount)
+                .Set_type(type)
                 .Send((response) =>
                 {
                     if (!response.HasErrors)
@@ -468,43 +508,5 @@ namespace cardgame
                 });
         }
 
-        void AddSilver(int currencyRef, long amount)
-        {
-            Debug.Log("Calling AddCurrency ... ");
-            new GameSparks.Api.Requests.LogEventRequest_addcurrency1()
-                .Set_currencyRef(currencyRef)
-                .Set_amount(amount)
-                .Send((response) =>
-                {
-                    if (!response.HasErrors)
-                    {
-                        Debug.Log("Silver Added");
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Failed to add Silver...\n" + response.Errors.JSON.ToString());
-                    }
-                });
-
-        }
-
-        static void AddSwag(int currencyRef, long amount)
-        {
-            Debug.Log("Calling AddCurrency ... ");
-            new GameSparks.Api.Requests.LogEventRequest_addcurrency1()
-                .Set_currencyRef(currencyRef)
-                .Set_amount(amount)
-                .Send((response) =>
-                {
-                    if (!response.HasErrors)
-                    {
-                        Debug.Log("Swag Added");
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Failed to add Swag...\n" + response.Errors.JSON.ToString());
-                    }
-                });
-        }
     }
 }

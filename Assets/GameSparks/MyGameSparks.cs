@@ -9,58 +9,6 @@ using GameSparks.Api.Responses;
 //THIS FILE IS AUTO GENERATED, DO NOT MODIFY!!
 
 namespace GameSparks.Api.Requests{
-	public class LogEventRequest_addcurrency1 : GSTypedRequest<LogEventRequest_addcurrency1, LogEventResponse>
-	{
-	
-		protected override GSTypedResponse BuildResponse (GSObject response){
-			return new LogEventResponse (response);
-		}
-		
-		public LogEventRequest_addcurrency1() : base("LogEventRequest"){
-			request.AddString("eventKey", "addcurrency1");
-		}
-		public LogEventRequest_addcurrency1 Set_currencyRef( long value )
-		{
-			request.AddNumber("currencyRef", value);
-			return this;
-		}			
-		public LogEventRequest_addcurrency1 Set_amount( long value )
-		{
-			request.AddNumber("amount", value);
-			return this;
-		}			
-	}
-	
-	public class LogChallengeEventRequest_addcurrency1 : GSTypedRequest<LogChallengeEventRequest_addcurrency1, LogChallengeEventResponse>
-	{
-		public LogChallengeEventRequest_addcurrency1() : base("LogChallengeEventRequest"){
-			request.AddString("eventKey", "addcurrency1");
-		}
-		
-		protected override GSTypedResponse BuildResponse (GSObject response){
-			return new LogChallengeEventResponse (response);
-		}
-		
-		/// <summary>
-		/// The challenge ID instance to target
-		/// </summary>
-		public LogChallengeEventRequest_addcurrency1 SetChallengeInstanceId( String challengeInstanceId )
-		{
-			request.AddString("challengeInstanceId", challengeInstanceId);
-			return this;
-		}
-		public LogChallengeEventRequest_addcurrency1 Set_currencyRef( long value )
-		{
-			request.AddNumber("currencyRef", value);
-			return this;
-		}			
-		public LogChallengeEventRequest_addcurrency1 Set_amount( long value )
-		{
-			request.AddNumber("amount", value);
-			return this;
-		}			
-	}
-	
 	public class LogEventRequest_bid : GSTypedRequest<LogEventRequest_bid, LogEventResponse>
 	{
 	
@@ -101,6 +49,69 @@ namespace GameSparks.Api.Requests{
 			request.AddNumber("tricks", value);
 			return this;
 		}			
+	}
+	
+	public class LogEventRequest_CDC : GSTypedRequest<LogEventRequest_CDC, LogEventResponse>
+	{
+	
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogEventResponse (response);
+		}
+		
+		public LogEventRequest_CDC() : base("LogEventRequest"){
+			request.AddString("eventKey", "CDC");
+		}
+		public LogEventRequest_CDC Set_id( long value )
+		{
+			request.AddNumber("id", value);
+			return this;
+		}			
+		public LogEventRequest_CDC Set_amount( long value )
+		{
+			request.AddNumber("amount", value);
+			return this;
+		}			
+		
+		public LogEventRequest_CDC Set_type( string value )
+		{
+			request.AddString("type", value);
+			return this;
+		}
+	}
+	
+	public class LogChallengeEventRequest_CDC : GSTypedRequest<LogChallengeEventRequest_CDC, LogChallengeEventResponse>
+	{
+		public LogChallengeEventRequest_CDC() : base("LogChallengeEventRequest"){
+			request.AddString("eventKey", "CDC");
+		}
+		
+		protected override GSTypedResponse BuildResponse (GSObject response){
+			return new LogChallengeEventResponse (response);
+		}
+		
+		/// <summary>
+		/// The challenge ID instance to target
+		/// </summary>
+		public LogChallengeEventRequest_CDC SetChallengeInstanceId( String challengeInstanceId )
+		{
+			request.AddString("challengeInstanceId", challengeInstanceId);
+			return this;
+		}
+		public LogChallengeEventRequest_CDC Set_id( long value )
+		{
+			request.AddNumber("id", value);
+			return this;
+		}			
+		public LogChallengeEventRequest_CDC Set_amount( long value )
+		{
+			request.AddNumber("amount", value);
+			return this;
+		}			
+		public LogChallengeEventRequest_CDC Set_type( string value )
+		{
+			request.AddString("type", value);
+			return this;
+		}
 	}
 	
 	public class LogEventRequest_get_cards : GSTypedRequest<LogEventRequest_get_cards, LogEventResponse>
@@ -345,49 +356,6 @@ namespace GameSparks.Api.Requests{
 		public LogChallengeEventRequest_tarneeb Set_trump( string value )
 		{
 			request.AddString("trump", value);
-			return this;
-		}
-	}
-	
-	public class LogEventRequest_test : GSTypedRequest<LogEventRequest_test, LogEventResponse>
-	{
-	
-		protected override GSTypedResponse BuildResponse (GSObject response){
-			return new LogEventResponse (response);
-		}
-		
-		public LogEventRequest_test() : base("LogEventRequest"){
-			request.AddString("eventKey", "test");
-		}
-		
-		public LogEventRequest_test Set_team( string value )
-		{
-			request.AddString("team", value);
-			return this;
-		}
-	}
-	
-	public class LogChallengeEventRequest_test : GSTypedRequest<LogChallengeEventRequest_test, LogChallengeEventResponse>
-	{
-		public LogChallengeEventRequest_test() : base("LogChallengeEventRequest"){
-			request.AddString("eventKey", "test");
-		}
-		
-		protected override GSTypedResponse BuildResponse (GSObject response){
-			return new LogChallengeEventResponse (response);
-		}
-		
-		/// <summary>
-		/// The challenge ID instance to target
-		/// </summary>
-		public LogChallengeEventRequest_test SetChallengeInstanceId( String challengeInstanceId )
-		{
-			request.AddString("challengeInstanceId", challengeInstanceId);
-			return this;
-		}
-		public LogChallengeEventRequest_test Set_team( string value )
-		{
-			request.AddString("team", value);
 			return this;
 		}
 	}

@@ -6,41 +6,52 @@ using cardgame;
 using UnityEngine.UI;
 using GameSparks.Api.Requests;
 using GameSparks.Core;
-using System;
-using System.Timers;
 using UnityEngine.EventSystems;
 using GameSparks.Api.Messages;
 
-[Serializable]
 public class GamePlayManager : MonoBehaviour
 {
-    public CanvasGroup deckCanvasGroup, bidCanvasGroup, buttonpannel;
+    //public CanvasGroup deck, bidCanvasGroup, buttonpannel, tarneebpannel;
     public GameObject[] pcards;
-    public GameObject PCard_1, PCard_2, PCard_3, PCard_4;
+    public GameObject PCard_1, PCard_2, PCard_3, PCard_4, deckpannel, bidGroup, buttonpannel, tarneebpannel;
     public Sprite[] lastbidobject;
     public Sprite[] Cards_Club;
     public Sprite[] Cards_Diamond;
     public Sprite[] Cards_Heart;
     public Sprite[] Cards_Spades;
     public Text Bid, Player2, Player3, Player4, MyPlayer, bidwinner, myturn;
-    private string ChallengeId, status, lastcard, _nxtplayer, _currentPlayer, _player1, _player2, _player3, _player4, bwinner;
+    private string ChallengeId, status, lastcard, _nxtplayer, _currentPlayer, _player1, _player2, _player3, _player4, bwinner, hwinner;
     private bool isbidding, IsBidding;
     private int bidcount, lastbid;
+    private static GamePlayManager instance = null;
+    #region Initialization
 
     void Awake()
     {
-        PCard_1.SetActive(false);
-        PCard_2.SetActive(false);
-        PCard_3.SetActive(false);
-        PCard_4.SetActive(false);
-        buttonpannel.interactable = false;
+        if (instance = null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            DontDestroyOnLoad(this.gameObject);
+        }
+       
+        PCard_1.GetComponent<Image>().enabled = false;
+        PCard_2.GetComponent<Image>().enabled = false;
+        PCard_3.GetComponent<Image>().enabled = false;
+        PCard_4.GetComponent<Image>().enabled = false;
+        //buttonpannel.interactable = false;
         Get_Cards();
-        Debug.Log("Player Cards hidden");
         ChallengeId = PlayerPrefs.GetString("chalid");
-
         GameObject go = GameObject.Find("Main_API");
         var nxtplayer = go.GetComponent<GameSparksManager>()._nxtplayer;
-        Debug.Log("Got Last Player");
+        _player1 = go.GetComponent<GameSparksManager>()._player1;
+        _player2 = go.GetComponent<GameSparksManager>()._player2;
+        _player3 = go.GetComponent<GameSparksManager>()._player3;
+        _player4 = go.GetComponent<GameSparksManager>()._player4;
+        Debug.Log(_player1 + " " + _player2 + " " +_player3 + " " +_player4);
         if (nxtplayer == PlayerPrefs.GetString("userId"))
         {
             ShowBidUI();
@@ -49,1327 +60,14 @@ public class GamePlayManager : MonoBehaviour
         {
             HideBidUI();
         }
+        HideTarneebUI();
         Debug.Log("Started Setting Cards");
-        
-
-        //StartCoroutine(Get_MyTurn());
         ChallengeTurnTakenMessage.Listener += ChallengeTurnTakenMessageListner;
         Debug.Log("Done with Cards");
     }
 
-    void Start()
-    {
-        //GameSparks.Api.Messages.ScriptMessage.Listener += GetMessages;
-    }
-
-    void Update()
-    {
-        if (IsBidding == true)
-        {
-            //StartCoroutine(Get_MyTurn());
-        }
-    }
-
-    void ChallengeTurnTakenMessageListner(ChallengeTurnTakenMessage _message)
-    {
-        Debug.Log("TurnTaken");
-        _nxtplayer = _message.Challenge.NextPlayer;
-        Debug.Log(_nxtplayer);
-        _currentPlayer = _message.Challenge.ScriptData.GetString("currentPlayer");
-        Debug.Log(_currentPlayer);
-        IsBidding = (bool)_message.Challenge.ScriptData.GetBoolean("Isbidding");
-        status = _message.Challenge.ScriptData.GetString("status");
-        Debug.Log(status);
-        if(status == "GamePlay")
-        {
-            lastcard = _message.Challenge.ScriptData.GetString("lastcard");
-            Bid.text = _message.Challenge.ScriptData.GetString("highestbid");
-        }
-        lastbid = (int)_message.Challenge.ScriptData.GetInt("bids");
-        Debug.Log(lastbid.ToString());
-        if(_message.Challenge.ScriptData.GetString("bidwinner") != "")
-        {
-            bidwinner.text = _message.Challenge.ScriptData.GetString("bidwinner");
-            bwinner = _message.Challenge.ScriptData.GetString("bidwinner");
-            if (bidwinner.text == PlayerPrefs.GetString("userId"))
-            {
-                myturn.text = "Play Card";
-            }
-        }
-        Debug.Log("All ok from Challenge");
-        switch (status)
-        {
-            case "bidding":
-                Status_bidding();
-                break;
-            case "Tarneeb":
-                Staus_Tarneeb();
-                break;
-            case "GamePlay":
-                buttonpannel.interactable = true;
-                Status_GamePlay();
-                break;
-        }
-    }
-
     void OnEnable()
     {
-
-    }
-
-    public void HideBidUI()
-    {
-        deckCanvasGroup.alpha = 1;
-        deckCanvasGroup.interactable = true;
-        deckCanvasGroup.blocksRaycasts = true;
-
-        bidCanvasGroup.alpha = 0;
-        bidCanvasGroup.interactable = false;
-        bidCanvasGroup.blocksRaycasts = false;
-
-    }
-
-    public void ShowBidUI()
-    {
-        deckCanvasGroup.alpha = 0.5f;
-        deckCanvasGroup.interactable = false;
-        deckCanvasGroup.blocksRaycasts = false;
-
-        bidCanvasGroup.alpha = 1;
-        bidCanvasGroup.interactable = true;
-        bidCanvasGroup.blocksRaycasts = true;
-    }
-
-    void Status_bidding()
-    {
-        if (_nxtplayer == PlayerPrefs.GetString("userId"))
-        {
-            ShowBidUI();
-        }
-
-        switch (lastbid)
-        {
-            case 7:
-                Button UserBtnBid_1 = GameObject.Find("UserBid_1").GetComponent<Button>();
-                UserBtnBid_1.interactable = false;
-                Image btnbid = GameObject.Find("BtnBid_1").GetComponent<Image>();
-                btnbid.sprite = lastbidobject[0];
-                break;
-            case 8:
-                Button BtnBid_2 = GameObject.Find("UserBid_2").GetComponent<Button>();
-                BtnBid_2.interactable = false;
-                Image btnbid2 = GameObject.Find("BtnBid_2").GetComponent<Image>();
-                btnbid2.sprite = lastbidobject[1];
-                break;
-            case 9:
-                Button BtnBid_3 = GameObject.Find("UserBid_3").GetComponent<Button>();
-                BtnBid_3.interactable = false;
-                Image btnbid3 = GameObject.Find("BtnBid_3").GetComponent<Image>();
-                btnbid3.sprite = lastbidobject[2];
-                break;
-            case 10:
-                Button BtnBid_4 = GameObject.Find("UserBid_4").GetComponent<Button>();
-                BtnBid_4.interactable = false;
-                Image btnbid4 = GameObject.Find("BtnBid_4").GetComponent<Image>();
-                btnbid4.sprite = lastbidobject[3];
-                break;
-            case 11:
-                Button BtnBid_5 = GameObject.Find("UserBid_5").GetComponent<Button>();
-                BtnBid_5.interactable = false;
-                Image btnbid5 = GameObject.Find("BtnBid_5").GetComponent<Image>();
-                btnbid5.sprite = lastbidobject[4];
-                break;
-            case 12:
-                Button BtnBid_6 = GameObject.Find("UserBid_6").GetComponent<Button>();
-                BtnBid_6.interactable = false;
-                Image btnbid6 = GameObject.Find("BtnBid_6").GetComponent<Image>();
-                btnbid6.sprite = lastbidobject[5];
-                break;
-            case 13:
-                Button BtnBid_7 = GameObject.Find("UserBid_7").GetComponent<Button>();
-                BtnBid_7.interactable = false;
-                Image btnbid7 = GameObject.Find("BtnBid_7").GetComponent<Image>();
-                btnbid7.sprite = lastbidobject[6];
-                break;
-        }
-
-    }
-
-    void Staus_Tarneeb()
-    {
-        if(bwinner != PlayerPrefs.GetString("userId") && _nxtplayer == PlayerPrefs.GetString("userId"))
-        {
-            new LogChallengeEventRequest_pass()
-               .SetChallengeInstanceId(ChallengeId)
-               .Send((response) =>
-               {
-                   if(!response.HasErrors)
-                   {
-
-                   }
-                   else
-                   {
-                       Debug.Log("");
-                   }
-               });
-        }
-    }
-
-    void Status_GamePlay()
-    {
-        Image PCard1 = GameObject.Find("Player1_Card").GetComponent<Image>();
-        Image PCard2 = GameObject.Find("Player1_Card").GetComponent<Image>();
-        Image PCard3 = GameObject.Find("Player1_Card").GetComponent<Image>();
-        Image PCard4 = GameObject.Find("Player1_Card").GetComponent<Image>();
-        Debug.Log("got Player card images");
-        switch (lastcard)
-        {
-            case "C2":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Club[0];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Club[0];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Club[0];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Club[0];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "C3":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Club[1];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Club[1];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Club[1];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Club[1];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "C4":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Club[2];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Club[2];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Club[2];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Club[2];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "C5":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Club[3];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Club[3];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Club[3];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Club[3];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "C6":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Club[4];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Club[4];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Club[4];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Club[4];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "C7":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Club[5];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Club[5];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Club[5];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Club[5];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "C8":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Club[6];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Club[6];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Club[6];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Club[6];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "C9":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Club[7];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Club[7];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Club[7];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Club[7];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "C10":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Club[8];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Club[8];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Club[8];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Club[8];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "C11":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Club[9];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Club[9];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Club[9];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Club[9];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "C12":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Club[10];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Club[10];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Club[10];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Club[10];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "C13":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Club[11];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Club[11];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Club[11];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Club[11];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "C14":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Club[12];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Club[12];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Club[12];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Club[12];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "D2":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Diamond[0];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Diamond[0];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Diamond[0];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Diamond[0];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "D3":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Diamond[1];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Diamond[1];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Diamond[1];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Diamond[1];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "D4":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Diamond[2];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Diamond[2];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Diamond[2];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Diamond[2];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "D5":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Diamond[3];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Diamond[3];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Diamond[3];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Diamond[3];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "D6":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Diamond[4];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Diamond[4];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Diamond[4];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Diamond[4];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "D7":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Diamond[5];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Diamond[5];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Diamond[5];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Diamond[5];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "D8":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Diamond[6];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Diamond[6];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Diamond[6];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Diamond[6];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "D9":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Diamond[7];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Diamond[7];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Diamond[7];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Diamond[7];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "D10":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Diamond[8];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Diamond[8];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Diamond[8];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Diamond[8];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "D11":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Diamond[9];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Diamond[9];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Diamond[9];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Diamond[9];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "D12":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Diamond[10];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Diamond[10];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Diamond[10];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Diamond[10];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "D13":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Diamond[11];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Diamond[11];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Diamond[11];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Diamond[11];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "D14":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Diamond[12];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Diamond[12];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Diamond[12];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Diamond[12];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "H2":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Heart[0];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Heart[0];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Heart[0];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Heart[0];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "H3":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Heart[1];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Heart[1];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Heart[1];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Heart[1];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "H4":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Heart[2];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Heart[2];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Heart[2];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Heart[2];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "H5":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Heart[3];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Heart[3];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Heart[3];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Heart[3];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "H6":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Heart[4];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Heart[4];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Heart[4];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Heart[4];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "H7":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Heart[5];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Heart[5];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Heart[5];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Heart[5];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "H8":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Heart[6];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Heart[6];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Heart[6];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Heart[6];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "H9":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Heart[7];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Heart[7];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Heart[7];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Heart[7];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "H10":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Heart[8];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Heart[8];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Heart[8];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Heart[8];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "H11":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Heart[9];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Heart[9];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Heart[9];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Heart[9];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "H12":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Heart[10];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Heart[10];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Heart[10];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Heart[10];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "H13":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Heart[11];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Heart[11];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Heart[11];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Heart[11];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "H14":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Heart[12];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Heart[12];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Heart[12];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Heart[12];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "S2":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Spades[0];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Spades[0];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Spades[0];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Spades[0];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "S3":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Spades[1];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Spades[1];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Spades[1];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Spades[1];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "S4":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Spades[2];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Spades[2];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Spades[2];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Spades[2];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "S5":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Spades[3];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Spades[3];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Spades[3];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Spades[3];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "S6":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Spades[4];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Spades[4];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Spades[4];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Spades[4];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "S7":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Spades[5];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Spades[5];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Spades[5];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Spades[5];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "S8":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Spades[6];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Spades[6];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Spades[6];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Spades[6];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "S9":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Spades[7];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Spades[7];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Spades[7];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Spades[7];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "S10":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Spades[8];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Spades[8];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Spades[8];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Spades[8];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "S11":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Spades[9];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Spades[9];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Spades[9];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Spades[9];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "S12":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Spades[10];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Spades[10];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Spades[10];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Spades[10];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "S13":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Spades[11];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Spades[11];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Spades[11];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Spades[11];
-                    PCard_4.SetActive(true);
-                }
-                break;
-            case "S14":
-                if (_currentPlayer == _player1)
-                {
-                    PCard1.sprite = Cards_Spades[12];
-                    PCard_1.SetActive(true);
-                }
-                else if (_currentPlayer == _player2)
-                {
-                    PCard2.sprite = Cards_Spades[12];
-                    PCard_2.SetActive(true);
-                }
-                else if (_currentPlayer == _player3)
-                {
-                    PCard3.sprite = Cards_Spades[12];
-                    PCard_3.SetActive(true);
-                }
-                else
-                {
-                    PCard4.sprite = Cards_Spades[12];
-                    PCard_4.SetActive(true);
-                }
-                break;
-
-        }
 
     }
 
@@ -1649,42 +347,1448 @@ public class GamePlayManager : MonoBehaviour
             });
     }
 
-    IEnumerator Get_MyTurn()
-    {
-        string Challengeid = PlayerPrefs.GetString("chalid");
-        bool myturn = false;
-        new GetChallengeRequest()
-            .SetChallengeInstanceId(Challengeid)
-            .Send((response) =>
-            {
-                if (!response.HasErrors)
-                {
-                    IsBidding = (bool)response.Challenge.ScriptData.GetBoolean("Isbidding");
-                    if (PlayerPrefs.GetString("userId") == response.Challenge.NextPlayer)
-                    {
-                        myturn = true;
+    #endregion
 
-                        //IsBidding = (bool)response.Challenge.ScriptData.GetBoolean("Isbidding");
-                        bidcount = (int)response.Challenge.ScriptData.GetInt("bidcount");
-                        if (bidcount == 5)
-                        {
-                            buttonpannel.interactable = true;
-                            int highbid = (int)response.Challenge.ScriptData.GetInt("highestbid");
-                            string bidWinner = response.Challenge.ScriptData.GetString("bidwinner");
-                        }
-                    }
-                }
-                else
-                    Debug.Log("Error Retrieving Leader board Data...");
-            });
-        yield return new WaitUntil(() => myturn == true);
-        isbidding = true;
-        ShowBidUI();
+    #region Challenge responses
+
+    void ChallengeTurnTakenMessageListner(ChallengeTurnTakenMessage _message)
+    {
+        Debug.Log(_nxtplayer + " TurnTaken");
+        _nxtplayer = _message.Challenge.NextPlayer;
+        _currentPlayer = _message.Challenge.ScriptData.GetString("currentPlayer");
+        IsBidding = (bool)_message.Challenge.ScriptData.GetBoolean("Isbidding");
+        status = _message.Challenge.ScriptData.GetString("status");
+        if (status == "GamePlay")
+        {
+            lastcard = _message.Challenge.ScriptData.GetString("lastcard");
+            Bid.text = _message.Challenge.ScriptData.GetString("highestbid");
+        }
+        lastbid = (int)_message.Challenge.ScriptData.GetInt("bids");
+        hwinner = _message.Challenge.ScriptData.GetString("Handwinner");
+        Debug.Log(lastbid.ToString());
+        if (_message.Challenge.ScriptData.GetString("bidwinner") != "")
+        {
+            //bidwinner.text = _message.Challenge.ScriptData.GetString("bidwinner");
+            //Debug.Log(bidwinner.text);
+            bwinner = _message.Challenge.ScriptData.GetString("bidwinner");
+            if (bidwinner.text == PlayerPrefs.GetString("userId"))
+            {
+                myturn.text = "Play Card";
+            }
+        }
+        Debug.Log("All OK from Challenge");
+        switch (status)
+        {
+            case "bidding":
+                Status_Bidding();
+                break;
+            case "Tarneeb":
+                Staus_Tarneeb();
+                break;
+            case "GamePlay":
+                GamePlay();
+                break;
+        }
     }
 
-    public void bid(int bid)
+    void ChallengeWonMessageListner(ChallengeWonMessage _message)
     {
-        StartCoroutine(bidding(bid));
+        //TODO popup for challenge Won
+    }
+
+    void ChallengeLostMessageListner(ChallengeLostMessage _message)
+    {
+        //TODO Add advertise, video, currency purchase popup
+    }
+
+    void ChallengeExpiredMessageListner(ChallengeExpiredMessage _message)
+    {
+
+    }
+
+    #endregion
+
+    #region UI Panel
+
+    void HideBidUI()
+    {
+        bidGroup.SetActive(false);
+        //deck.alpha = 1;
+        //deck.interactable = true;
+        //deck.blocksRaycasts = true;
+
+        //bidCanvasGroup.alpha = 0;
+        //bidCanvasGroup.interactable = false;
+        //bidCanvasGroup.blocksRaycasts = false;
+
+    }
+
+    void ShowBidUI()
+    {
+        bidGroup.SetActive(true);
+
+        //if (deck != null)
+        //{
+        //    Debug.Log("Bid UI Step1");
+        //    deck.alpha = 0.5f;
+        //    Debug.Log("Bid UI Step2");
+        //    deck.interactable = false;
+        //    Debug.Log("Bid UI Step3");
+        //    deck.blocksRaycasts = false;
+
+
+        //    Debug.Log("Bid UI Step4");
+        //    bidCanvasGroup.alpha = 1;
+        //    Debug.Log("Bid UI Step5");
+        //    bidCanvasGroup.interactable = true;
+        //    Debug.Log("Bid UI Step6");
+        //    bidCanvasGroup.blocksRaycasts = true;
+        //}
+    }
+
+    void HideTarneebUI()
+    {
+        tarneebpannel.SetActive(false);
+        //deck.alpha = 1;
+        //deck.interactable = true;
+        //deck.blocksRaycasts = true;
+
+        //tarneebpannel.alpha = 0;
+        //tarneebpannel.interactable = false;
+        //tarneebpannel.blocksRaycasts = false;
+
+    }
+
+    void ShowTarneebUI()
+    {
+        tarneebpannel.SetActive(true);
+        //deck.alpha = 0.5f;
+        //deck.interactable = false;
+        //deck.blocksRaycasts = false;
+
+        //tarneebpannel.alpha = 1;
+        //tarneebpannel.interactable = true;
+        //tarneebpannel.blocksRaycasts = true;
+    }
+
+    #endregion
+
+    void GamePlay()
+    {
+        if (hwinner != null)
+        {
+            if (hwinner != "Server")
+            {
+                ClearDeck();
+            }
+            else
+            {
+                Status_GamePlay();
+            }
+        }
+    } 
+
+    void Status_Bidding()
+    {
+        Debug.Log("Bidding area");
+        if (_nxtplayer == PlayerPrefs.GetString("userId"))
+        {
+            Debug.Log("Current Player");
+            ShowBidUI();
+        }
+
+        switch (lastbid)
+        {
+            case 7:
+                Button UserBtnBid_1 = GameObject.Find("UserBid_1").GetComponent<Button>();
+                UserBtnBid_1.interactable = false;
+                Image btnbid = GameObject.Find("BtnBid_1").GetComponent<Image>();
+                btnbid.sprite = lastbidobject[0];
+                break;
+            case 8:
+                Button BtnBid_2 = GameObject.Find("UserBid_2").GetComponent<Button>();
+                BtnBid_2.interactable = false;
+                Image btnbid2 = GameObject.Find("BtnBid_2").GetComponent<Image>();
+                btnbid2.sprite = lastbidobject[1];
+                break;
+            case 9:
+                Button BtnBid_3 = GameObject.Find("UserBid_3").GetComponent<Button>();
+                BtnBid_3.interactable = false;
+                Image btnbid3 = GameObject.Find("BtnBid_3").GetComponent<Image>();
+                btnbid3.sprite = lastbidobject[2];
+                break;
+            case 10:
+                Button BtnBid_4 = GameObject.Find("UserBid_4").GetComponent<Button>();
+                BtnBid_4.interactable = false;
+                Image btnbid4 = GameObject.Find("BtnBid_4").GetComponent<Image>();
+                btnbid4.sprite = lastbidobject[3];
+                break;
+            case 11:
+                Button BtnBid_5 = GameObject.Find("UserBid_5").GetComponent<Button>();
+                BtnBid_5.interactable = false;
+                Image btnbid5 = GameObject.Find("BtnBid_5").GetComponent<Image>();
+                btnbid5.sprite = lastbidobject[4];
+                break;
+            case 12:
+                Button BtnBid_6 = GameObject.Find("UserBid_6").GetComponent<Button>();
+                BtnBid_6.interactable = false;
+                Image btnbid6 = GameObject.Find("BtnBid_6").GetComponent<Image>();
+                btnbid6.sprite = lastbidobject[5];
+                break;
+            case 13:
+                Button BtnBid_7 = GameObject.Find("UserBid_7").GetComponent<Button>();
+                BtnBid_7.interactable = false;
+                Image btnbid7 = GameObject.Find("BtnBid_7").GetComponent<Image>();
+                btnbid7.sprite = lastbidobject[6];
+                break;
+        }
+
+    }
+
+    void Staus_Tarneeb()
+    {
+        if (lastcard != PlayerPrefs.GetString("userId") && _nxtplayer == PlayerPrefs.GetString("userId"))
+        {
+            new LogChallengeEventRequest_pass()
+               .SetChallengeInstanceId(ChallengeId)
+               .Send((response) =>
+               {
+                   if (!response.HasErrors)
+                   {
+
+                   }
+                   else
+                   {
+                       Debug.Log("");
+                   }
+               });
+        }
+        else if (bwinner == PlayerPrefs.GetString("userId") && _nxtplayer == PlayerPrefs.GetString("userId"))
+        {
+            ShowTarneebUI();
+        }
+    }
+
+    void Status_GamePlay()
+    {
+        if (lastcard == "J0" && bwinner != PlayerPrefs.GetString("userId") && _nxtplayer == PlayerPrefs.GetString("userId"))
+        {
+            Debug.Log("Sending Pass " + PlayerPrefs.GetString("userId"));
+            new LogChallengeEventRequest_pass()
+               .SetChallengeInstanceId(ChallengeId)
+               .Send((response) =>
+               {
+                   if (!response.HasErrors)
+                   {
+
+                   }
+                   else
+                   {
+                       Debug.Log("");
+                   }
+               });
+        }
+        else
+        {
+
+            if (_nxtplayer == PlayerPrefs.GetString("userId"))
+            {
+                myturn.text = "Your Turn";
+            }
+            else
+            {
+                myturn.text = "";
+            }
+
+            Image PCard1 = GameObject.Find("Player1_Card").GetComponent<Image>();
+            Image PCard2 = GameObject.Find("Player2_Card").GetComponent<Image>();
+            Image PCard3 = GameObject.Find("Player3_Card").GetComponent<Image>();
+            Image PCard4 = GameObject.Find("Player4_Card").GetComponent<Image>();
+            Debug.Log("got Player card images");
+            switch (lastcard)
+            {
+                case "J0":
+                    PCard_1.GetComponent<Image>().enabled = false;
+                    PCard_2.GetComponent<Image>().enabled = false;
+                    PCard_3.GetComponent<Image>().enabled = false;
+                    PCard_4.GetComponent<Image>().enabled = false;
+                    break;
+                case "C2":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Club[0];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Club[0];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Club[0];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Club[0];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "C3":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Club[1];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Club[1];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Club[1];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Club[1];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "C4":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Club[2];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Club[2];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Club[2];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Club[2];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "C5":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Club[3];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Club[3];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Club[3];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Club[3];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "C6":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Club[4];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Club[4];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Club[4];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Club[4];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "C7":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Club[5];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Club[5];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Club[5];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Club[5];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "C8":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Club[6];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Club[6];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Club[6];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Club[6];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "C9":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Club[7];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Club[7];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Club[7];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Club[7];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "C10":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Club[8];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Club[8];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Club[8];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Club[8];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "C11":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Club[9];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Club[9];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Club[9];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Club[9];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "C12":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Club[10];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Club[10];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Club[10];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Club[10];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "C13":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Club[11];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Club[11];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Club[11];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Club[11];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "C14":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Club[12];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Club[12];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Club[12];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Club[12];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "D2":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Diamond[0];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Diamond[0];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Diamond[0];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Diamond[0];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "D3":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Diamond[1];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Diamond[1];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Diamond[1];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Diamond[1];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "D4":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Diamond[2];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Diamond[2];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Diamond[2];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Diamond[2];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "D5":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Diamond[3];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Diamond[3];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Diamond[3];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Diamond[3];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "D6":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Diamond[4];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Diamond[4];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Diamond[4];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Diamond[4];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "D7":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Diamond[5];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Diamond[5];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Diamond[5];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Diamond[5];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "D8":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Diamond[6];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Diamond[6];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Diamond[6];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Diamond[6];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "D9":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Diamond[7];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Diamond[7];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Diamond[7];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Diamond[7];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "D10":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Diamond[8];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Diamond[8];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Diamond[8];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Diamond[8];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "D11":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Diamond[9];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Diamond[9];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Diamond[9];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Diamond[9];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "D12":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Diamond[10];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Diamond[10];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Diamond[10];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Diamond[10];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "D13":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Diamond[11];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Diamond[11];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Diamond[11];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Diamond[11];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "D14":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Diamond[12];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Diamond[12];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Diamond[12];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Diamond[12];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "H2":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Heart[0];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Heart[0];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Heart[0];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Heart[0];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "H3":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Heart[1];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Heart[1];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Heart[1];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Heart[1];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "H4":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Heart[2];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Heart[2];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Heart[2];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Heart[2];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "H5":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Heart[3];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Heart[3];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Heart[3];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Heart[3];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "H6":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Heart[4];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Heart[4];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Heart[4];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Heart[4];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "H7":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Heart[5];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Heart[5];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Heart[5];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Heart[5];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "H8":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Heart[6];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Heart[6];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Heart[6];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Heart[6];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "H9":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Heart[7];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Heart[7];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Heart[7];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Heart[7];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "H10":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Heart[8];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Heart[8];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Heart[8];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Heart[8];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "H11":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Heart[9];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Heart[9];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Heart[9];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Heart[9];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "H12":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Heart[10];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Heart[10];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Heart[10];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Heart[10];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "H13":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Heart[11];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Heart[11];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Heart[11];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Heart[11];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "H14":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Heart[12];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Heart[12];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Heart[12];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Heart[12];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "S2":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Spades[0];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Spades[0];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Spades[0];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Spades[0];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "S3":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Spades[1];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Spades[1];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Spades[1];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Spades[1];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "S4":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Spades[2];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Spades[2];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Spades[2];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Spades[2];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "S5":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Spades[3];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Spades[3];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Spades[3];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Spades[3];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "S6":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Spades[4];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Spades[4];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Spades[4];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Spades[4];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "S7":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Spades[5];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Spades[5];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Spades[5];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Spades[5];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "S8":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Spades[6];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Spades[6];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Spades[6];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Spades[6];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "S9":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Spades[7];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Spades[7];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Spades[7];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Spades[7];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "S10":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Spades[8];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Spades[8];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Spades[8];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Spades[8];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "S11":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Spades[9];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Spades[9];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Spades[9];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Spades[9];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "S12":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Spades[10];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Spades[10];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Spades[10];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Spades[10];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "S13":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Spades[11];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Spades[11];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Spades[11];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Spades[11];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+                case "S14":
+                    if (_currentPlayer == _player1)
+                    {
+                        PCard1.sprite = Cards_Spades[12];
+                        PCard_1.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player2)
+                    {
+                        PCard2.sprite = Cards_Spades[12];
+                        PCard_2.GetComponent<Image>().enabled = true;
+                    }
+                    else if (_currentPlayer == _player3)
+                    {
+                        PCard3.sprite = Cards_Spades[12];
+                        PCard_3.GetComponent<Image>().enabled = true;
+                    }
+                    else
+                    {
+                        PCard4.sprite = Cards_Spades[12];
+                        PCard_4.GetComponent<Image>().enabled = true;
+                    }
+                    break;
+
+            }
+        }
+    }
+
+    void ClearDeck()
+    {
+        PCard_1.GetComponent<Image>().enabled = false;
+        PCard_2.GetComponent<Image>().enabled = false;
+        PCard_3.GetComponent<Image>().enabled = false;
+        PCard_4.GetComponent<Image>().enabled = false;
+
+        if (hwinner != PlayerPrefs.GetString("userId") && _nxtplayer == PlayerPrefs.GetString("userId"))
+        {
+            new LogChallengeEventRequest_pass()
+               .SetChallengeInstanceId(ChallengeId)
+               .Send((response) =>
+               {
+                   if (!response.HasErrors)
+                   {
+
+                   }
+                   else
+                   {
+                       Debug.Log("");
+                   }
+               });
+        }
+        else if (hwinner == PlayerPrefs.GetString("userId") && _nxtplayer == PlayerPrefs.GetString("userId"))
+        {
+            myturn.text = "Your Turn";
+        }
     }
 
     public IEnumerator bidding(int bid)
@@ -1705,9 +1809,41 @@ public class GamePlayManager : MonoBehaviour
         HideBidUI();
     }
 
+    #region button functions
+
+    public void bid(int bid)
+    {
+        StartCoroutine(bidding(bid));
+    }
+
+    public void Set_Tarneeb()
+    {
+        if (status == "Tarneeb")
+        {
+            var go = EventSystem.current.currentSelectedGameObject;
+            if (go != null)
+            {
+                new LogChallengeEventRequest_tarneeb()
+                 .SetChallengeInstanceId(ChallengeId)
+                 .Set_trump(go.name)
+                 .Send((_message) =>
+                 {
+                     if (!_message.HasErrors)
+                     {
+                         Debug.Log("Tarneeb Set");
+                     }
+                     else
+                         Debug.Log("Error while Setting Tarneeb");
+                 });
+            }
+            HideTarneebUI();
+            //buttonpannel.interactable = true;
+        }
+    }
+
     public void play_card()
     {
-        if (bidcount == 5)
+        if (status == "GamePlay" && _nxtplayer == PlayerPrefs.GetString("userId"))
         {
             var go = EventSystem.current.currentSelectedGameObject;
             if (go != null)
@@ -1720,12 +1856,72 @@ public class GamePlayManager : MonoBehaviour
                      if (!_message.HasErrors)
                      {
                          Debug.Log("Card Played");
+                         go.SetActive(false);
                      }
                      else
                          Debug.Log("Error while Playing Card");
                  });
             }
-            go.SetActive(false);
+            
         }
     }
+
+    #endregion
+
+    #region power-ups
+    public void powerup1()
+    {
+      //TODO Call even to send powerup  
+    }
+
+    public void powerup2()
+    {
+        //TODO Call even to send powerup  
+    }
+
+    public void powerup3()
+    {
+        //TODO Call even to send powerup  
+    }
+
+    public void powerup4()
+    {
+        //TODO Call even to send powerup  
+    }
+
+    public void powerup5()
+    {
+        //TODO Call even to send powerup  
+    }
+
+    public void GetMessages(ScriptMessage message)
+    {
+        if (message.ExtCode == "powerup1")
+        {
+            //Do some stuff
+        }
+
+        if (message.ExtCode == "powerup2")
+        {
+            //Do some stuff
+        }
+
+        if (message.ExtCode == "powerup3")
+        {
+            //Do some other stuff
+        }
+
+        if (message.ExtCode == "powerup4")
+        {
+            //Do some stuff
+        }
+
+        if (message.ExtCode == "powerup5")
+        {
+            //Do some other stuff
+        }
+
+    }
+
+    #endregion
 }

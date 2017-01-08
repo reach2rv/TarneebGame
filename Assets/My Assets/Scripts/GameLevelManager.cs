@@ -5,22 +5,9 @@ using UnityEngine.UI;
 
 public class GameLevelManager : MonoBehaviour
 {
-
-    // Use this for initialization
     int currentlevel, requiredlevel1, requiredlevel2, requiredlevel3, requiredlevel4, requiredlevel5, requiredlevel6;
     public Text lvl1, lvl2, lvl3, lvl4, lvl5, lvl6;
     public GameObject lock1, lock2, lock3, lock4, lock5, lock6;
-    //PlayerPrefs.SetInt("achvmnts", achvmnts);
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     void OnEnable()
     {
@@ -112,6 +99,7 @@ public class GameLevelManager : MonoBehaviour
 
     }
 
+    #region button functions
     public void level1_play_click()
     {
         if (PlayerPrefs.GetInt("lvl1unlocked") == 1)
@@ -161,4 +149,6 @@ public class GameLevelManager : MonoBehaviour
             //TODO: Load Level
         }
     }
+
+    #endregion
 }
